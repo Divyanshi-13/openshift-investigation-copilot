@@ -95,7 +95,7 @@ export function InvestigationWorkspace() {
         status="investigating"
       />
 
-      <div className="grid min-h-0 flex-1 grid-rows-[minmax(0,1fr)_minmax(380px,50%)]">
+      <div className="grid min-h-0 flex-1 grid-rows-[minmax(0,1fr)_minmax(200px,30%)]">
         <div className="grid min-h-0 grid-cols-1 lg:grid-cols-[280px_minmax(0,1fr)_300px]">
           <div className="min-h-0 max-h-[42vh] lg:max-h-none">
             <EvidenceExplorer input={input} analysis={analysis} />

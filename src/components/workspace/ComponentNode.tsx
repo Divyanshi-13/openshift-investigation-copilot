@@ -48,7 +48,7 @@ function ComponentNodeComponent({ data }: NodeProps<ComponentFlowNode>) {
   return (
     <div
       className={cn(
-        'relative min-w-[210px] rounded-xl border-2 bg-white px-4 py-3.5 transition-all duration-200 hover:-translate-y-1 hover:shadow-lg',
+        'relative min-w-[180px] rounded-lg border-2 bg-white px-3 py-2.5 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg',
         meta.ring,
         meta.pulse && 'animate-node-pulse',
       )}
@@ -62,10 +62,10 @@ function ComponentNodeComponent({ data }: NodeProps<ComponentFlowNode>) {
         position={Position.Left}
         className="!h-2.5 !w-2.5 !rounded-full !border-2 !border-white !bg-[var(--color-accent)]"
       />
-      <p className="text-[15px] font-bold tracking-tight text-[var(--color-foreground)]">
+      <p className="text-sm font-bold tracking-tight text-[var(--color-foreground)]">
         {data.label}
       </p>
-      <div className="mt-2 flex items-center justify-between">
+      <div className="mt-1.5 flex items-center justify-between">
         <p className={cn('flex items-center gap-1.5 text-xs font-semibold', meta.text)}>
           <span className={cn('inline-block h-2.5 w-2.5 rounded-full', meta.dot)} />
           {data.statusLabel}

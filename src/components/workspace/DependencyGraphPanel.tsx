@@ -56,8 +56,8 @@ function layoutNodes(
   if (roots.length === 0 && graphNodes.length > 0) roots.push(graphNodes[0])
 
   const positions = new Map<string, { x: number; y: number }>()
-  const COL_WIDTH = 300
-  const ROW_HEIGHT = 120
+  const COL_WIDTH = 240
+  const ROW_HEIGHT = 90
   let rowCounter = 0
 
   function place(id: string, depth: number) {
@@ -179,7 +179,7 @@ export function DependencyGraphPanel({ graph }: DependencyGraphPanelProps) {
           edges={edges}
           nodeTypes={nodeTypes}
           fitView
-          fitViewOptions={{ padding: 0.35 }}
+          fitViewOptions={{ padding: 0.15 }}
           nodesDraggable
           nodesConnectable={false}
           elementsSelectable
