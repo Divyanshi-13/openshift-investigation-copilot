@@ -16,14 +16,17 @@ export function RCAReportPage() {
 
   if (!analysis || !input) {
     return (
-      <div className="mx-auto max-w-3xl px-6 py-16 text-center">
-        <h1 className="text-xl font-semibold">No RCA available</h1>
+      <div className="hero-grid mx-auto flex max-w-3xl flex-col items-center px-6 py-24 text-center">
+        <div className="mb-6 flex h-16 w-16 items-center justify-center rounded-2xl border border-[var(--color-accent)]/20 bg-[var(--color-accent-soft)]">
+          <Download className="h-7 w-7 text-[var(--color-accent)]" />
+        </div>
+        <h1 className="gradient-text text-xl font-bold">No RCA Available</h1>
         <p className="mt-2 text-sm text-[var(--color-muted)]">
           Run an investigation analysis first to generate the report.
         </p>
         <Link
           to="/investigations/new"
-          className="mt-6 inline-flex h-10 items-center rounded-md bg-[var(--color-accent)] px-4 text-sm font-medium text-[#0d1117]"
+          className="glow-accent mt-6 inline-flex h-10 items-center gap-2 rounded-md bg-[var(--color-accent)] px-5 text-sm font-semibold text-[#0d1117]"
         >
           Create Investigation
         </Link>
@@ -81,10 +84,11 @@ export function RCAReportPage() {
     <div className="mx-auto max-w-4xl px-6 py-8">
       <div className="mb-6 flex flex-wrap items-start justify-between gap-4">
         <div>
-          <p className="mb-1 text-xs uppercase tracking-[0.12em] text-[var(--color-muted-foreground)]">
-            RCA Report
-          </p>
-          <h1 className="text-2xl font-semibold tracking-tight">
+          <div className="mb-2 inline-flex items-center gap-2 rounded-full border border-[var(--color-success)]/30 bg-[var(--color-success-soft)] px-3 py-1 text-xs font-medium text-[var(--color-success)]">
+            <Download className="h-3 w-3" />
+            Root Cause Analysis
+          </div>
+          <h1 className="gradient-text text-2xl font-bold tracking-tight">
             {input.title}
           </h1>
         </div>
@@ -179,7 +183,8 @@ function ReportSection({
   children: ReactNode
 }) {
   return (
-    <Card>
+    <Card className="relative overflow-hidden">
+      <div className="absolute inset-x-0 top-0 h-0.5 bg-gradient-to-r from-[var(--color-accent)] to-[var(--color-accent)]/30" />
       <CardHeader>
         <CardTitle>{title}</CardTitle>
       </CardHeader>

@@ -12,9 +12,10 @@ export function CommandHeader({
   status = 'idle',
 }: CommandHeaderProps) {
   return (
-    <header className="flex h-12 shrink-0 items-center gap-4 border-b border-[var(--color-border)] bg-[var(--color-surface)]/95 px-4 backdrop-blur-md">
+    <header className="relative flex h-12 shrink-0 items-center gap-4 border-b border-[var(--color-border)] bg-[var(--color-surface)]/95 px-4 backdrop-blur-md">
+      <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-[var(--color-accent)]/40 to-transparent" />
       <Link to="/" className="flex min-w-0 items-center gap-2.5">
-        <div className="flex h-7 w-7 items-center justify-center rounded border border-[var(--color-border)] bg-[var(--color-background)] font-mono text-[11px] font-bold text-[var(--color-accent)]">
+        <div className="glow-accent flex h-8 w-8 items-center justify-center rounded-lg border border-[var(--color-accent)]/30 bg-[var(--color-accent-soft)] font-mono text-xs font-bold text-[var(--color-accent)]">
           OI
         </div>
         <div className="hidden min-w-0 sm:block">

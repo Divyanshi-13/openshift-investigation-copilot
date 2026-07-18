@@ -94,6 +94,60 @@
   .animate-node-pulse {
     animation: nodePulse 2.8s ease-in-out infinite;
   }
+
+  .animate-float {
+    animation: float 6s ease-in-out infinite;
+  }
+
+  .gradient-text {
+    background: linear-gradient(135deg, #4da3ff 0%, #79b8ff 40%, #a5d8ff 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .gradient-text-warm {
+    background: linear-gradient(135deg, #f0b429 0%, #f79009 50%, #f04438 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .hero-grid {
+    background-image:
+      linear-gradient(rgba(77, 163, 255, 0.06) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(77, 163, 255, 0.06) 1px, transparent 1px);
+    background-size: 40px 40px;
+  }
+
+  .glass-card {
+    background: rgba(17, 22, 29, 0.7);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(42, 51, 64, 0.6);
+  }
+
+  .glow-accent {
+    box-shadow: 0 0 20px rgba(77, 163, 255, 0.15), 0 0 60px rgba(77, 163, 255, 0.05);
+  }
+
+  .glow-danger {
+    box-shadow: 0 0 20px rgba(240, 68, 56, 0.15), 0 0 60px rgba(240, 68, 56, 0.05);
+  }
+
+  .glow-warning {
+    box-shadow: 0 0 20px rgba(240, 180, 41, 0.15), 0 0 60px rgba(240, 180, 41, 0.05);
+  }
+
+  .glow-success {
+    box-shadow: 0 0 20px rgba(61, 214, 140, 0.15), 0 0 60px rgba(61, 214, 140, 0.05);
+  }
+
+  .category-border-networking { border-left: 3px solid #4da3ff; }
+  .category-border-authentication { border-left: 3px solid #a78bfa; }
+  .category-border-storage { border-left: 3px solid #3dd68c; }
+  .category-border-performance { border-left: 3px solid #f0b429; }
+  .category-border-provisioning { border-left: 3px solid #f79009; }
+  .category-border-upgrades { border-left: 3px solid #f04438; }
 }
 
 @keyframes fadeUp {
@@ -138,6 +192,16 @@
   50% {
     filter: drop-shadow(0 0 8px rgba(240, 68, 56, 0.45));
   }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-8px); }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
 }
 
 /* React Flow dark overrides */

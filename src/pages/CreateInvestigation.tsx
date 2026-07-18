@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState, type FormEvent } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
-import { Loader2, Sparkles } from 'lucide-react'
+import { BookOpen, Loader2, Server, Sparkles, Stethoscope } from 'lucide-react'
 import { useInvestigation } from '@/context/InvestigationContext'
 import {
   analyzeInvestigation,
@@ -126,16 +126,33 @@ export function CreateInvestigation() {
     }
   }
 
+  const filledCount = [title, symptoms, evidence, ocpVersion, recentChanges].filter(
+    (v) => v.trim().length > 0,
+  ).length
+
   return (
     <div className="mx-auto max-w-3xl px-6 py-8">
       <div className="mb-6">
-        <h1 className="text-2xl font-semibold tracking-tight">
+        <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-[var(--color-accent)]/30 bg-[var(--color-accent-soft)] px-3 py-1.5 text-xs font-medium text-[var(--color-accent)]">
+          <Stethoscope className="h-3.5 w-3.5" />
           Guided Case Intake
+        </div>
+        <h1 className="gradient-text text-2xl font-bold tracking-tight sm:text-3xl">
+          New Investigation
         </h1>
         <p className="mt-2 text-sm text-[var(--color-muted)]">
           Capture environment context, symptoms, and evidence. Mock analysis maps
           intake to curated OpenShift scenarios — not a chatbot.
         </p>
+        <div className="mt-3 flex items-center gap-2">
+          <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-[var(--color-background)]">
+            <div
+              className="h-full rounded-full bg-[var(--color-accent)] transition-all duration-500"
+              style={{ width: `${(filledCount / 5) * 100}%` }}
+            />
+          </div>
+          <span className="text-xs font-mono text-[var(--color-muted)]">{filledCount}/5</span>
+        </div>
       </div>
 
       <Card className="mb-6">
@@ -146,7 +163,10 @@ export function CreateInvestigation() {
 
       <Card className="mb-6">
         <CardHeader>
-          <CardTitle>Sample scenarios</CardTitle>
+          <div className="flex items-center gap-2">
+            <BookOpen className="h-4 w-4 text-[var(--color-accent)]" />
+            <CardTitle>Sample Scenarios</CardTitle>
+          </div>
           <CardDescription>
             Search and load a scenario grouped by category.
           </CardDescription>
@@ -190,14 +210,17 @@ export function CreateInvestigation() {
 
       <Card>
         <CardHeader>
-          <CardTitle>Case details</CardTitle>
+          <div className="flex items-center gap-2">
+            <Server className="h-4 w-4 text-[var(--color-accent)]" />
+            <CardTitle>Case Details</CardTitle>
+          </div>
           <CardDescription>
             Environment fields narrow relevance (e.g. AWS ELB vs Azure).
             {activeScenarioId != null && <> Scenario #{activeScenarioId} loaded.</>}
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form className="space-y-5" onSubmit={handleSubmit}>
+          <form className="space-y-6" onSubmit={handleSubmit}>
             <div className="space-y-2">
               <Label htmlFor="title">Investigation Title</Label>
               <Input
@@ -267,15 +290,20 @@ export function CreateInvestigation() {
               </div>
             </div>
 
-            <label className="flex items-center gap-2 text-sm">
+            <label className="flex cursor-pointer items-center gap-3 rounded-md border border-[var(--color-border)] bg-[var(--color-background)] px-3 py-3 text-sm transition-colors hover:border-[var(--color-accent)]/50">
               <input
                 type="checkbox"
                 checked={mustGatherAvailable}
                 onChange={(e) => setMustGatherAvailable(e.target.checked)}
-                className="h-4 w-4 rounded border-[var(--color-border)]"
+                className="h-4 w-4 rounded border-[var(--color-border)] accent-[var(--color-accent)]"
               />
-              Must-gather available
+              <div>
+                <span className="font-medium text-[var(--color-foreground)]">Must-gather available</span>
+                <p className="text-xs text-[var(--color-muted-foreground)]">Check if you have a must-gather archive for this cluster</p>
+              </div>
             </label>
+
+            <div className="border-t border-[var(--color-border-subtle)] pt-4" />
 
             <div className="space-y-2">
               <Label htmlFor="recentChanges">What changed?</Label>

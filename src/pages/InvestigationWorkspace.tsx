@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Loader2 } from 'lucide-react'
+import { Loader2, Radar, Search, Workflow } from 'lucide-react'
 import { useInvestigation } from '@/context/InvestigationContext'
 import { analyzeInvestigation } from '@/services/aiService'
 import { decodeSharePayload } from '@/lib/shareUrl'
@@ -54,20 +54,32 @@ export function InvestigationWorkspace() {
     return (
       <div className="flex h-full flex-col">
         <CommandHeader status="idle" />
-        <div className="flex flex-1 flex-col items-center justify-center gap-4 px-6 text-center">
+        <div className="hero-grid flex flex-1 flex-col items-center justify-center gap-6 px-6 text-center">
+          <div className="relative">
+            <div className="animate-float flex h-24 w-24 items-center justify-center rounded-2xl border border-[var(--color-accent)]/20 bg-[var(--color-accent-soft)]">
+              <Workflow className="h-10 w-10 text-[var(--color-accent)]" />
+            </div>
+            <div className="absolute -bottom-1 -right-1 flex h-8 w-8 items-center justify-center rounded-lg border border-[var(--color-warning)]/40 bg-[var(--color-warning-soft)]">
+              <Radar className="h-4 w-4 text-[var(--color-warning)]" />
+            </div>
+            <div className="absolute -left-1 -top-1 flex h-8 w-8 items-center justify-center rounded-lg border border-[var(--color-success)]/40 bg-[var(--color-success-soft)]">
+              <Search className="h-4 w-4 text-[var(--color-success)]" />
+            </div>
+          </div>
           <div className="max-w-md">
-            <h1 className="text-2xl font-semibold tracking-tight">
+            <h1 className="gradient-text text-2xl font-bold tracking-tight">
               Investigation Command Center
             </h1>
-            <p className="mt-2 text-sm text-[var(--color-muted)]">
-              No active investigation. Start Guided Case Intake to populate the
-              evidence explorer, AI engine, and dependency graph.
+            <p className="mt-3 text-sm leading-relaxed text-[var(--color-muted)]">
+              No active investigation. Start a Guided Case Intake to populate the
+              evidence explorer, AI reasoning engine, and dependency graph.
             </p>
           </div>
           <Link
             to="/investigations/new"
-            className="inline-flex h-10 items-center rounded-md bg-[var(--color-accent)] px-4 text-sm font-semibold text-[#061018] transition-transform hover:scale-[1.02]"
+            className="glow-accent inline-flex h-10 items-center gap-2 rounded-md bg-[var(--color-accent)] px-5 text-sm font-semibold text-[#061018] transition-transform hover:scale-[1.02] active:scale-[0.98]"
           >
+            <Radar className="h-4 w-4" />
             Open Case Intake
           </Link>
         </div>
