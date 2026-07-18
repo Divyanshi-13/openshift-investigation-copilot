@@ -14,24 +14,30 @@ export type ComponentFlowNode = Node<ComponentNodeData, 'component'>
 
 const statusMeta: Record<
   HealthStatus,
-  { dot: string; ring: string; text: string; pulse: boolean }
+  { dot: string; ring: string; text: string; bg: string; accent: string; pulse: boolean }
 > = {
   failed: {
-    dot: 'bg-[var(--color-danger)]',
-    ring: 'border-[var(--color-danger)]/50 shadow-sm',
-    text: 'text-[var(--color-danger)]',
+    dot: 'bg-[#c9190b]',
+    ring: 'border-[#c9190b] shadow-md',
+    text: 'text-[#c9190b]',
+    bg: 'bg-[#c9190b]/[0.06]',
+    accent: '#c9190b',
     pulse: true,
   },
   warning: {
-    dot: 'bg-[var(--color-warning)]',
-    ring: 'border-[var(--color-warning)]/50 shadow-sm',
-    text: 'text-[var(--color-warning)]',
+    dot: 'bg-[#f0ab00]',
+    ring: 'border-[#f0ab00] shadow-md',
+    text: 'text-[#b98900]',
+    bg: 'bg-[#f0ab00]/[0.06]',
+    accent: '#f0ab00',
     pulse: false,
   },
   healthy: {
-    dot: 'bg-[var(--color-success)]',
-    ring: 'border-[var(--color-success)]/50 shadow-sm',
-    text: 'text-[var(--color-success)]',
+    dot: 'bg-[#3e8635]',
+    ring: 'border-[#3e8635]/60 shadow-sm',
+    text: 'text-[#3e8635]',
+    bg: 'bg-[#3e8635]/[0.04]',
+    accent: '#3e8635',
     pulse: false,
   },
 }
@@ -42,30 +48,43 @@ function ComponentNodeComponent({ data }: NodeProps<ComponentFlowNode>) {
   return (
     <div
       className={cn(
-        'min-w-[168px] rounded-lg border bg-white px-3 py-2.5 transition-transform duration-200 hover:-translate-y-0.5 hover:scale-[1.02]',
+        'relative min-w-[210px] rounded-xl border-2 bg-white px-4 py-3.5 transition-all duration-200 hover:-translate-y-1 hover:shadow-lg',
         meta.ring,
         meta.pulse && 'animate-node-pulse',
       )}
     >
+      <div
+        className={cn('absolute inset-x-0 top-0 h-1 rounded-t-xl')}
+        style={{ backgroundColor: meta.accent }}
+      />
       <Handle
         type="target"
         position={Position.Top}
-        className="!h-2 !w-2 !border-0 !bg-[var(--color-accent)]"
+        className="!h-2.5 !w-2.5 !rounded-full !border-2 !border-white !bg-[var(--color-accent)]"
       />
-      <p className="text-sm font-semibold tracking-tight text-[var(--color-foreground)]">
+      <p className="text-[15px] font-bold tracking-tight text-[var(--color-foreground)]">
         {data.label}
       </p>
-      <p className={cn('mt-1 flex items-center gap-1.5 text-xs font-medium', meta.text)}>
-        <span className={cn('inline-block h-2 w-2 rounded-full', meta.dot)} />
-        {data.statusLabel}
-      </p>
-      <p className="mt-1 text-[10px] uppercase tracking-[0.1em] text-[var(--color-muted)]">
-        Issues: {data.issueCount}
-      </p>
+      <div className="mt-2 flex items-center justify-between">
+        <p className={cn('flex items-center gap-1.5 text-xs font-semibold', meta.text)}>
+          <span className={cn('inline-block h-2.5 w-2.5 rounded-full', meta.dot)} />
+          {data.statusLabel}
+        </p>
+        {data.issueCount > 0 && (
+          <span
+            className={cn(
+              'rounded-full px-2 py-0.5 text-[10px] font-bold text-white',
+              data.status === 'failed' ? 'bg-[#c9190b]' : 'bg-[#f0ab00]',
+            )}
+          >
+            {data.issueCount} {data.issueCount === 1 ? 'issue' : 'issues'}
+          </span>
+        )}
+      </div>
       <Handle
         type="source"
         position={Position.Bottom}
-        className="!h-2 !w-2 !border-0 !bg-[var(--color-accent)]"
+        className="!h-2.5 !w-2.5 !rounded-full !border-2 !border-white !bg-[var(--color-accent)]"
       />
     </div>
   )

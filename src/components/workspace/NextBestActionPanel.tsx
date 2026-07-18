@@ -1,9 +1,13 @@
 import { useState } from 'react'
-import { Check, Copy, Crosshair, ListChecks } from 'lucide-react'
+import { Check, Copy, Crosshair, ExternalLink, FileText, ListChecks } from 'lucide-react'
 import type { AnalysisResult } from '@/types/investigation'
 
 interface NextBestActionPanelProps {
   analysis: AnalysisResult
+}
+
+function kcsUrl(id: string) {
+  return `https://access.redhat.com/solutions/${id}`
 }
 
 export function NextBestActionPanel({ analysis }: NextBestActionPanelProps) {
@@ -78,15 +82,68 @@ export function NextBestActionPanel({ analysis }: NextBestActionPanelProps) {
           </ul>
         </div>
 
-        {analysis.relatedArticles[0] && (
-          <div className="rounded-md border border-[var(--color-border)] bg-white px-3 py-2 text-xs card-shadow">
-            <p className="text-[var(--color-muted)]">Primary article</p>
-            <p className="mt-1 font-mono font-semibold text-[var(--color-accent)]">
-              {analysis.relatedArticles[0].id}
-            </p>
-            <p className="mt-0.5 text-[var(--color-foreground)]">
-              {analysis.relatedArticles[0].title}
-            </p>
+        {analysis.relatedArticles.length > 0 && (
+          <div className="animate-fade-up rounded-md border border-[var(--color-border)] bg-white p-3 card-shadow">
+            <div className="mb-2 flex items-center gap-2">
+              <FileText className="h-3.5 w-3.5 text-[var(--color-accent)]" />
+              <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-[var(--color-muted)]">
+                Related KCS Articles
+              </p>
+            </div>
+            <ul className="space-y-2.5">
+              {analysis.relatedArticles.map((article) => (
+                <li key={article.id}>
+                  <a
+                    href={kcsUrl(article.id)}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group block rounded-md border border-[var(--color-border-subtle)] bg-[var(--color-panel)] px-3 py-2 transition-all hover:border-[var(--color-accent)]/40 hover:shadow-sm"
+                  >
+                    <div className="flex items-center justify-between gap-2">
+                      <span className="font-mono text-xs font-semibold text-[var(--color-accent)]">
+                        KCS {article.id}
+                      </span>
+                      <ExternalLink className="h-3 w-3 text-[var(--color-muted)] transition-colors group-hover:text-[var(--color-accent)]" />
+                    </div>
+                    <p className="mt-1 text-xs leading-snug text-[var(--color-foreground)]">
+                      {article.title}
+                    </p>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+
+        {analysis.knownBugs.length > 0 && (
+          <div className="animate-fade-up rounded-md border border-[var(--color-border)] bg-white p-3 card-shadow">
+            <div className="mb-2 flex items-center gap-2">
+              <span className="text-[10px] font-semibold uppercase tracking-[0.14em] text-[var(--color-muted)]">
+                Known Bugs
+              </span>
+            </div>
+            <ul className="space-y-2">
+              {analysis.knownBugs.map((bug) => (
+                <li key={bug.id}>
+                  <a
+                    href={`https://bugzilla.redhat.com/show_bug.cgi?id=${bug.id}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group block rounded-md border border-[var(--color-border-subtle)] bg-[var(--color-panel)] px-3 py-2 transition-all hover:border-[var(--color-warning)]/40 hover:shadow-sm"
+                  >
+                    <div className="flex items-center justify-between gap-2">
+                      <span className="font-mono text-xs font-semibold text-[var(--color-warning)]">
+                        BZ#{bug.id}
+                      </span>
+                      <ExternalLink className="h-3 w-3 text-[var(--color-muted)] transition-colors group-hover:text-[var(--color-warning)]" />
+                    </div>
+                    <p className="mt-1 text-xs leading-snug text-[var(--color-foreground)]">
+                      {bug.summary}
+                    </p>
+                  </a>
+                </li>
+              ))}
+            </ul>
           </div>
         )}
       </div>

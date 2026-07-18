@@ -3,6 +3,7 @@ import {
   Background,
   Controls,
   MarkerType,
+  MiniMap,
   ReactFlow,
   type Edge,
   type Node,
@@ -30,23 +31,27 @@ const statusBg: Record<HealthStatus, string> = {
 export function DependencyGraph({ graph }: DependencyGraphProps) {
   const nodes: Node[] = useMemo(
     () =>
-      graph.nodes.map((node, index) => ({
-        id: node.id,
-        position: { x: 40, y: index * 110 },
-        data: { label: node.label },
-        style: {
-          background: statusBg[node.status],
-          border: `1px solid ${statusColor[node.status]}`,
-          color: '#151515',
-          borderRadius: 8,
-          padding: '10px 16px',
-          fontSize: 13,
-          fontWeight: 600,
-          width: 180,
-          textAlign: 'center' as const,
-          boxShadow: `0 1px 3px rgba(0,0,0,0.06)`,
-        },
-      })),
+      graph.nodes.map((node, index) => {
+        const col = index % 3
+        const row = Math.floor(index / 3)
+        return {
+          id: node.id,
+          position: { x: col * 260 + 40, y: row * 130 },
+          data: { label: node.label },
+          style: {
+            background: statusBg[node.status],
+            border: `2px solid ${statusColor[node.status]}`,
+            color: '#151515',
+            borderRadius: 10,
+            padding: '12px 20px',
+            fontSize: 14,
+            fontWeight: 700,
+            width: 210,
+            textAlign: 'center' as const,
+            boxShadow: '0 2px 8px rgba(0,0,0,0.06)',
+          },
+        }
+      }),
     [graph.nodes],
   )
 
@@ -58,7 +63,7 @@ export function DependencyGraph({ graph }: DependencyGraphProps) {
         target: edge.target,
         type: 'smoothstep',
         animated: true,
-        style: { stroke: '#c9190b', strokeWidth: 1.5 },
+        style: { stroke: '#c9190b', strokeWidth: 2 },
         markerEnd: {
           type: MarkerType.ArrowClosed,
           color: '#c9190b',
@@ -90,13 +95,26 @@ export function DependencyGraph({ graph }: DependencyGraphProps) {
             nodes={nodes}
             edges={edges}
             fitView
-            nodesDraggable={false}
+            fitViewOptions={{ padding: 0.3 }}
+            nodesDraggable
             nodesConnectable={false}
             elementsSelectable={false}
             proOptions={{ hideAttribution: true }}
           >
-            <Background color="#d2d2d2" gap={18} size={1} />
+            <Background color="#d2d2d2" gap={24} size={1} />
             <Controls showInteractive={false} />
+            <MiniMap
+              nodeColor={(node) => {
+                const status = graph.nodes.find((n) => n.id === node.id)?.status
+                return status ? statusColor[status] : '#d2d2d2'
+              }}
+              maskColor="rgba(240, 240, 240, 0.7)"
+              style={{
+                backgroundColor: 'white',
+                border: '1px solid #d2d2d2',
+                borderRadius: 8,
+              }}
+            />
           </ReactFlow>
         </div>
       </CardContent>
@@ -108,8 +126,8 @@ function Legend({ color, label }: { color: string; label: string }) {
   return (
     <span className="inline-flex items-center gap-1.5">
       <span
-        className="h-2.5 w-2.5 rounded-full"
-        style={{ backgroundColor: color }}
+        className="h-3 w-3 rounded-full border-2"
+        style={{ borderColor: color, backgroundColor: `${color}20` }}
       />
       {label}
     </span>

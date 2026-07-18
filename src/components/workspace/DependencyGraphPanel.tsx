@@ -3,6 +3,7 @@ import {
   Background,
   Controls,
   MarkerType,
+  MiniMap,
   ReactFlow,
   type Edge,
   type Node,
@@ -32,10 +33,70 @@ function enrichStatus(status: HealthStatus): {
   return { statusLabel: 'Healthy', issueCount: 0 }
 }
 
+const statusColors: Record<HealthStatus, string> = {
+  failed: '#c9190b',
+  warning: '#f0ab00',
+  healthy: '#3e8635',
+}
+
+function layoutNodes(
+  graphNodes: AnalysisResult['graph']['nodes'],
+  graphEdges: AnalysisResult['graph']['edges'],
+) {
+  const childMap = new Map<string, string[]>()
+  const hasParent = new Set<string>()
+  for (const e of graphEdges) {
+    const children = childMap.get(e.source) ?? []
+    children.push(e.target)
+    childMap.set(e.source, children)
+    hasParent.add(e.target)
+  }
+
+  const roots = graphNodes.filter((n) => !hasParent.has(n.id))
+  if (roots.length === 0 && graphNodes.length > 0) roots.push(graphNodes[0])
+
+  const positions = new Map<string, { x: number; y: number }>()
+  const COL_WIDTH = 280
+  const ROW_HEIGHT = 140
+  let colCounter = 0
+
+  function place(id: string, depth: number) {
+    if (positions.has(id)) return
+    positions.set(id, { x: colCounter * COL_WIDTH, y: depth * ROW_HEIGHT })
+    const children = childMap.get(id) ?? []
+    if (children.length === 0) {
+      colCounter++
+      return
+    }
+    for (const child of children) {
+      place(child, depth + 1)
+    }
+  }
+
+  for (const root of roots) {
+    place(root.id, 0)
+  }
+
+  const placed = new Set(positions.keys())
+  for (const node of graphNodes) {
+    if (!placed.has(node.id)) {
+      positions.set(node.id, { x: colCounter * COL_WIDTH, y: 0 })
+      colCounter++
+    }
+  }
+
+  return positions
+}
+
 export function DependencyGraphPanel({ graph }: DependencyGraphPanelProps) {
+  const positions = useMemo(
+    () => layoutNodes(graph.nodes, graph.edges),
+    [graph.nodes, graph.edges],
+  )
+
   const nodes: Node[] = useMemo(
     () =>
-      graph.nodes.map((node, index) => {
+      graph.nodes.map((node) => {
         const meta = enrichStatus(node.status)
         const data: ComponentNodeData = {
           label: node.label,
@@ -43,17 +104,15 @@ export function DependencyGraphPanel({ graph }: DependencyGraphPanelProps) {
           statusLabel: node.statusLabel ?? meta.statusLabel,
           issueCount: node.issueCount ?? meta.issueCount,
         }
+        const pos = positions.get(node.id) ?? { x: 0, y: 0 }
         return {
           id: node.id,
           type: 'component',
-          position: {
-            x: 40 + (index % 2) * 40,
-            y: index * 108,
-          },
+          position: pos,
           data,
         }
       }),
-    [graph.nodes],
+    [graph.nodes, positions],
   )
 
   const edges: Edge[] = useMemo(
@@ -66,33 +125,52 @@ export function DependencyGraphPanel({ graph }: DependencyGraphPanelProps) {
         animated: true,
         style: {
           stroke: '#c9190b',
-          strokeWidth: 1.6,
+          strokeWidth: 2,
         },
         markerEnd: {
           type: MarkerType.ArrowClosed,
           color: '#c9190b',
-          width: 16,
-          height: 16,
+          width: 18,
+          height: 18,
         },
       })),
     [graph.edges],
   )
 
   return (
-    <section className="flex h-full min-h-0 flex-col border-t border-[var(--color-border)] bg-white">
-      <div className="flex items-center justify-between border-b border-[var(--color-border)] px-4 py-2">
+    <section className="flex h-full min-h-0 flex-col border-t-2 border-[var(--color-accent)] bg-white">
+      <div className="flex items-center justify-between border-b border-[var(--color-border)] px-5 py-3">
         <div>
-          <h2 className="text-xs font-semibold uppercase tracking-[0.14em] text-[var(--color-muted)]">
+          <h2 className="flex items-center gap-2 text-sm font-bold text-[var(--color-foreground)]">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="text-[var(--color-accent)]">
+              <circle cx="8" cy="3" r="2.5" stroke="currentColor" strokeWidth="1.5" fill="none" />
+              <circle cx="3" cy="13" r="2.5" stroke="currentColor" strokeWidth="1.5" fill="none" />
+              <circle cx="13" cy="13" r="2.5" stroke="currentColor" strokeWidth="1.5" fill="none" />
+              <line x1="8" y1="5.5" x2="4" y2="10.5" stroke="currentColor" strokeWidth="1.5" />
+              <line x1="8" y1="5.5" x2="12" y2="10.5" stroke="currentColor" strokeWidth="1.5" />
+            </svg>
             Dependency Graph
           </h2>
-          <p className="text-[11px] text-[var(--color-muted-foreground)]">
-            Interactive failure cascade — hover nodes to inspect
+          <p className="mt-0.5 text-xs text-[var(--color-muted)]">
+            Interactive failure cascade visualization — drag nodes, scroll to zoom
           </p>
         </div>
-        <div className="flex items-center gap-3 text-[11px] font-medium text-[var(--color-muted)]">
-          <span className="flex items-center gap-1"><span className="inline-block h-2 w-2 rounded-full bg-[#c9190b]" /> Failed</span>
-          <span className="flex items-center gap-1"><span className="inline-block h-2 w-2 rounded-full bg-[#f0ab00]" /> Warning</span>
-          <span className="flex items-center gap-1"><span className="inline-block h-2 w-2 rounded-full bg-[#3e8635]" /> Healthy</span>
+        <div className="flex items-center gap-4 text-xs font-medium text-[var(--color-muted)]">
+          <span className="flex items-center gap-1.5">
+            <span className="inline-block h-3 w-3 rounded-full border-2 border-[#c9190b] bg-[#c9190b]/15" />
+            Failed
+          </span>
+          <span className="flex items-center gap-1.5">
+            <span className="inline-block h-3 w-3 rounded-full border-2 border-[#f0ab00] bg-[#f0ab00]/15" />
+            Warning
+          </span>
+          <span className="flex items-center gap-1.5">
+            <span className="inline-block h-3 w-3 rounded-full border-2 border-[#3e8635] bg-[#3e8635]/15" />
+            Healthy
+          </span>
+          <span className="rounded border border-[var(--color-border)] bg-[var(--color-panel)] px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide">
+            {graph.nodes.length} nodes · {graph.edges.length} edges
+          </span>
         </div>
       </div>
       <div className="min-h-0 flex-1">
@@ -101,15 +179,27 @@ export function DependencyGraphPanel({ graph }: DependencyGraphPanelProps) {
           edges={edges}
           nodeTypes={nodeTypes}
           fitView
-          fitViewOptions={{ padding: 0.2 }}
+          fitViewOptions={{ padding: 0.35 }}
           nodesDraggable
           nodesConnectable={false}
           elementsSelectable
           proOptions={{ hideAttribution: true }}
           className="bg-[var(--color-panel)]"
         >
-          <Background color="#d2d2d2" gap={20} size={1} />
+          <Background color="#d2d2d2" gap={24} size={1} />
           <Controls showInteractive={false} />
+          <MiniMap
+            nodeColor={(node) => {
+              const status = (node.data as ComponentNodeData)?.status
+              return statusColors[status] ?? '#d2d2d2'
+            }}
+            maskColor="rgba(240, 240, 240, 0.7)"
+            style={{
+              backgroundColor: 'white',
+              border: '1px solid #d2d2d2',
+              borderRadius: 8,
+            }}
+          />
         </ReactFlow>
       </div>
     </section>
