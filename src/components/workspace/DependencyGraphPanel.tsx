@@ -56,16 +56,16 @@ function layoutNodes(
   if (roots.length === 0 && graphNodes.length > 0) roots.push(graphNodes[0])
 
   const positions = new Map<string, { x: number; y: number }>()
-  const COL_WIDTH = 280
-  const ROW_HEIGHT = 140
-  let colCounter = 0
+  const COL_WIDTH = 300
+  const ROW_HEIGHT = 120
+  let rowCounter = 0
 
   function place(id: string, depth: number) {
     if (positions.has(id)) return
-    positions.set(id, { x: colCounter * COL_WIDTH, y: depth * ROW_HEIGHT })
+    positions.set(id, { x: depth * COL_WIDTH, y: rowCounter * ROW_HEIGHT })
     const children = childMap.get(id) ?? []
     if (children.length === 0) {
-      colCounter++
+      rowCounter++
       return
     }
     for (const child of children) {
@@ -80,8 +80,8 @@ function layoutNodes(
   const placed = new Set(positions.keys())
   for (const node of graphNodes) {
     if (!placed.has(node.id)) {
-      positions.set(node.id, { x: colCounter * COL_WIDTH, y: 0 })
-      colCounter++
+      positions.set(node.id, { x: 0, y: rowCounter * ROW_HEIGHT })
+      rowCounter++
     }
   }
 

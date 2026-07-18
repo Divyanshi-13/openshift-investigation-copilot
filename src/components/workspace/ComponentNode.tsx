@@ -54,12 +54,12 @@ function ComponentNodeComponent({ data }: NodeProps<ComponentFlowNode>) {
       )}
     >
       <div
-        className={cn('absolute inset-x-0 top-0 h-1 rounded-t-xl')}
+        className={cn('absolute inset-y-0 left-0 w-1 rounded-l-xl')}
         style={{ backgroundColor: meta.accent }}
       />
       <Handle
         type="target"
-        position={Position.Top}
+        position={Position.Left}
         className="!h-2.5 !w-2.5 !rounded-full !border-2 !border-white !bg-[var(--color-accent)]"
       />
       <p className="text-[15px] font-bold tracking-tight text-[var(--color-foreground)]">
@@ -83,7 +83,7 @@ function ComponentNodeComponent({ data }: NodeProps<ComponentFlowNode>) {
       </div>
       <Handle
         type="source"
-        position={Position.Bottom}
+        position={Position.Right}
         className="!h-2.5 !w-2.5 !rounded-full !border-2 !border-white !bg-[var(--color-accent)]"
       />
     </div>
