@@ -58,10 +58,10 @@ export function DependencyGraph({ graph }: DependencyGraphProps) {
         target: edge.target,
         type: 'smoothstep',
         animated: true,
-        style: { stroke: '#58a6ff', strokeWidth: 1.5 },
+        style: { stroke: '#ee0000', strokeWidth: 1.5 },
         markerEnd: {
           type: MarkerType.ArrowClosed,
-          color: '#58a6ff',
+          color: '#ee0000',
         },
       })),
     [graph.edges],

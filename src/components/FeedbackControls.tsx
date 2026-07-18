@@ -45,7 +45,7 @@ export function FeedbackControls({ hypothesisId }: FeedbackControlsProps) {
           type="button"
           size="sm"
           variant={vote === 'up' ? 'default' : 'ghost'}
-          className={cn(vote === 'up' && 'bg-[var(--color-success)] text-[#0d1117]')}
+          className={cn(vote === 'up' && 'bg-[var(--color-success)] text-white')}
           onClick={() => {
             setVote('up')
             setShowNote(false)

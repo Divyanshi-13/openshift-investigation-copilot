@@ -80,7 +80,7 @@ export function InvestigationAssistant({ analysis }: InvestigationAssistantProps
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
-        className="pointer-events-auto inline-flex h-12 items-center gap-2 rounded-full border border-[var(--color-accent)]/50 bg-[var(--color-accent)] px-4 text-sm font-semibold text-[#061018] shadow-[0_0_24px_rgba(77,163,255,0.35)] transition-transform hover:scale-[1.03] active:scale-[0.98]"
+        className="pointer-events-auto inline-flex h-12 items-center gap-2 rounded-full border border-[var(--color-accent)]/50 bg-[var(--color-accent)] px-4 text-sm font-semibold text-white shadow-[0_0_24px_rgba(238,0,0,0.3)] transition-transform hover:scale-[1.03] active:scale-[0.98]"
       >
         <MessageSquareText className="h-4 w-4" />
         Assistant

@@ -65,12 +65,12 @@ export function DependencyGraphPanel({ graph }: DependencyGraphPanelProps) {
         type: 'smoothstep',
         animated: true,
         style: {
-          stroke: '#4da3ff',
+          stroke: '#ee0000',
           strokeWidth: 1.6,
         },
         markerEnd: {
           type: MarkerType.ArrowClosed,
-          color: '#4da3ff',
+          color: '#ee0000',
           width: 16,
           height: 16,
         },
@@ -108,7 +108,7 @@ export function DependencyGraphPanel({ graph }: DependencyGraphPanelProps) {
           proOptions={{ hideAttribution: true }}
           className="bg-[var(--color-background)]"
         >
-          <Background color="#2a3340" gap={20} size={1} />
+          <Background color="#3c3f42" gap={20} size={1} />
           <Controls showInteractive={false} />
         </ReactFlow>
       </div>

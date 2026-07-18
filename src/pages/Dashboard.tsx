@@ -32,15 +32,15 @@ function statusVariant(status: string) {
 }
 
 const categoryColors: Record<string, string> = {
-  'Node Lifecycle': '#f79009',
-  'Cluster Operators / OLM': '#a78bfa',
-  'Machine Management': '#4da3ff',
-  'Upgrades / Lifecycle': '#f04438',
-  Networking: '#4da3ff',
-  Storage: '#3dd68c',
-  Authentication: '#a78bfa',
-  'Monitoring / Observability': '#f0b429',
-  Unclassified: '#6b7687',
+  'Node Lifecycle': '#ec7a08',
+  'Cluster Operators / OLM': '#a18fff',
+  'Machine Management': '#2b9af3',
+  'Upgrades / Lifecycle': '#c9190b',
+  Networking: '#2b9af3',
+  Storage: '#3e8635',
+  Authentication: '#a18fff',
+  'Monitoring / Observability': '#f0ab00',
+  Unclassified: '#6a6e73',
 }
 
 const categoryBorderClass: Record<string, string> = {
@@ -176,10 +176,10 @@ function SeverityChart({
   severities: Array<[string, number]>
 }) {
   const sevColors: Record<string, string> = {
-    critical: '#f04438',
-    high: '#f79009',
-    medium: '#f0b429',
-    low: '#3dd68c',
+    critical: '#c9190b',
+    high: '#ec7a08',
+    medium: '#f0ab00',
+    low: '#3e8635',
   }
   const maxVal = Math.max(...severities.map(([, v]) => v))
 
@@ -238,7 +238,7 @@ export function Dashboard() {
               <div className="mt-6 flex flex-wrap gap-3">
                 <Link
                   to="/investigations/new"
-                  className="glow-accent inline-flex h-10 items-center gap-2 rounded-md bg-[var(--color-accent)] px-5 text-sm font-semibold text-[#0d1117] transition-transform hover:scale-[1.02] active:scale-[0.98]"
+                  className="glow-accent inline-flex h-10 items-center gap-2 rounded-md bg-[var(--color-accent)] px-5 text-sm font-semibold text-white transition-transform hover:scale-[1.02] active:scale-[0.98]"
                 >
                   <Plus className="h-4 w-4" />
                   Start Investigation

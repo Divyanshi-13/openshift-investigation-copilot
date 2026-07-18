@@ -1,29 +1,32 @@
 @import "tailwindcss";
 
 @theme {
-  --font-sans: "IBM Plex Sans", "Segoe UI", ui-sans-serif, system-ui, sans-serif;
-  --font-mono: "IBM Plex Mono", "SF Mono", "Cascadia Code", ui-monospace, Menlo, monospace;
+  --font-sans: "Red Hat Display", "Red Hat Text", "IBM Plex Sans", "Segoe UI", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "Red Hat Mono", "IBM Plex Mono", "SF Mono", "Cascadia Code", ui-monospace, Menlo, monospace;
 
-  --color-background: #0a0e14;
-  --color-surface: #11161d;
-  --color-surface-elevated: #171d25;
-  --color-panel: #0f141b;
-  --color-border: #2a3340;
-  --color-border-subtle: #1c2430;
-  --color-foreground: #e8edf4;
-  --color-muted: #8b96a8;
-  --color-muted-foreground: #6b7687;
-  --color-accent: #4da3ff;
-  --color-accent-soft: rgba(77, 163, 255, 0.12);
-  --color-accent-glow: rgba(77, 163, 255, 0.35);
-  --color-success: #3dd68c;
-  --color-warning: #f0b429;
-  --color-danger: #f04438;
-  --color-orange: #f79009;
-  --color-danger-soft: rgba(240, 68, 56, 0.14);
-  --color-warning-soft: rgba(240, 180, 41, 0.14);
-  --color-success-soft: rgba(61, 214, 140, 0.12);
-  --color-orange-soft: rgba(247, 144, 9, 0.14);
+  --color-background: #0f1214;
+  --color-surface: #1a1d21;
+  --color-surface-elevated: #212427;
+  --color-panel: #151719;
+  --color-border: #3c3f42;
+  --color-border-subtle: #2a2d30;
+  --color-foreground: #e0e0e0;
+  --color-muted: #8a8d90;
+  --color-muted-foreground: #6a6e73;
+  --color-accent: #ee0000;
+  --color-accent-soft: rgba(238, 0, 0, 0.12);
+  --color-accent-glow: rgba(238, 0, 0, 0.35);
+  --color-accent-hover: #ff4d4d;
+  --color-success: #3e8635;
+  --color-warning: #f0ab00;
+  --color-danger: #c9190b;
+  --color-orange: #ec7a08;
+  --color-info: #2b9af3;
+  --color-danger-soft: rgba(201, 25, 11, 0.14);
+  --color-warning-soft: rgba(240, 171, 0, 0.14);
+  --color-success-soft: rgba(62, 134, 53, 0.14);
+  --color-orange-soft: rgba(236, 122, 8, 0.14);
+  --color-info-soft: rgba(43, 154, 243, 0.12);
 }
 
 @layer base {
@@ -43,15 +46,15 @@
     font-family: var(--font-sans);
     background-color: var(--color-background);
     background-image:
-      linear-gradient(180deg, rgba(77, 163, 255, 0.04), transparent 220px),
-      radial-gradient(ellipse 80% 50% at 50% -20%, rgba(77, 163, 255, 0.08), transparent);
+      linear-gradient(180deg, rgba(238, 0, 0, 0.03), transparent 220px),
+      radial-gradient(ellipse 80% 50% at 50% -20%, rgba(238, 0, 0, 0.06), transparent);
     color: var(--color-foreground);
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
   }
 
   ::selection {
-    background: rgba(77, 163, 255, 0.35);
+    background: rgba(238, 0, 0, 0.3);
   }
 
   a {
@@ -70,7 +73,7 @@
 @layer utilities {
   .scrollbar-thin {
     scrollbar-width: thin;
-    scrollbar-color: #2a3340 transparent;
+    scrollbar-color: #3c3f42 transparent;
   }
 
   .panel-glow {
@@ -100,14 +103,14 @@
   }
 
   .gradient-text {
-    background: linear-gradient(135deg, #4da3ff 0%, #79b8ff 40%, #a5d8ff 100%);
+    background: linear-gradient(135deg, #ee0000 0%, #ff4d4d 40%, #ff8a8a 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
   }
 
   .gradient-text-warm {
-    background: linear-gradient(135deg, #f0b429 0%, #f79009 50%, #f04438 100%);
+    background: linear-gradient(135deg, #f0ab00 0%, #ec7a08 50%, #c9190b 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -115,39 +118,39 @@
 
   .hero-grid {
     background-image:
-      linear-gradient(rgba(77, 163, 255, 0.06) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(77, 163, 255, 0.06) 1px, transparent 1px);
+      linear-gradient(rgba(238, 0, 0, 0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(238, 0, 0, 0.04) 1px, transparent 1px);
     background-size: 40px 40px;
   }
 
   .glass-card {
-    background: rgba(17, 22, 29, 0.7);
+    background: rgba(26, 29, 33, 0.7);
     backdrop-filter: blur(12px);
-    border: 1px solid rgba(42, 51, 64, 0.6);
+    border: 1px solid rgba(60, 63, 66, 0.6);
   }
 
   .glow-accent {
-    box-shadow: 0 0 20px rgba(77, 163, 255, 0.15), 0 0 60px rgba(77, 163, 255, 0.05);
+    box-shadow: 0 0 20px rgba(238, 0, 0, 0.15), 0 0 60px rgba(238, 0, 0, 0.05);
   }
 
   .glow-danger {
-    box-shadow: 0 0 20px rgba(240, 68, 56, 0.15), 0 0 60px rgba(240, 68, 56, 0.05);
+    box-shadow: 0 0 20px rgba(201, 25, 11, 0.15), 0 0 60px rgba(201, 25, 11, 0.05);
   }
 
   .glow-warning {
-    box-shadow: 0 0 20px rgba(240, 180, 41, 0.15), 0 0 60px rgba(240, 180, 41, 0.05);
+    box-shadow: 0 0 20px rgba(240, 171, 0, 0.15), 0 0 60px rgba(240, 171, 0, 0.05);
   }
 
   .glow-success {
-    box-shadow: 0 0 20px rgba(61, 214, 140, 0.15), 0 0 60px rgba(61, 214, 140, 0.05);
+    box-shadow: 0 0 20px rgba(62, 134, 53, 0.15), 0 0 60px rgba(62, 134, 53, 0.05);
   }
 
-  .category-border-networking { border-left: 3px solid #4da3ff; }
-  .category-border-authentication { border-left: 3px solid #a78bfa; }
-  .category-border-storage { border-left: 3px solid #3dd68c; }
-  .category-border-performance { border-left: 3px solid #f0b429; }
-  .category-border-provisioning { border-left: 3px solid #f79009; }
-  .category-border-upgrades { border-left: 3px solid #f04438; }
+  .category-border-networking { border-left: 3px solid #2b9af3; }
+  .category-border-authentication { border-left: 3px solid #a18fff; }
+  .category-border-storage { border-left: 3px solid #3e8635; }
+  .category-border-performance { border-left: 3px solid #f0ab00; }
+  .category-border-provisioning { border-left: 3px solid #ec7a08; }
+  .category-border-upgrades { border-left: 3px solid #c9190b; }
 }
 
 @keyframes fadeUp {
@@ -165,11 +168,11 @@
   0%,
   100% {
     opacity: 1;
-    box-shadow: 0 0 0 0 rgba(240, 180, 41, 0.35);
+    box-shadow: 0 0 0 0 rgba(240, 171, 0, 0.35);
   }
   50% {
     opacity: 0.9;
-    box-shadow: 0 0 0 6px rgba(240, 180, 41, 0);
+    box-shadow: 0 0 0 6px rgba(240, 171, 0, 0);
   }
 }
 
@@ -190,7 +193,7 @@
     filter: drop-shadow(0 0 0 transparent);
   }
   50% {
-    filter: drop-shadow(0 0 8px rgba(240, 68, 56, 0.45));
+    filter: drop-shadow(0 0 8px rgba(201, 25, 11, 0.45));
   }
 }
 

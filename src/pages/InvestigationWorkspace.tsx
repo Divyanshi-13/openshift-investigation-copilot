@@ -77,7 +77,7 @@ export function InvestigationWorkspace() {
           </div>
           <Link
             to="/investigations/new"
-            className="glow-accent inline-flex h-10 items-center gap-2 rounded-md bg-[var(--color-accent)] px-5 text-sm font-semibold text-[#061018] transition-transform hover:scale-[1.02] active:scale-[0.98]"
+            className="glow-accent inline-flex h-10 items-center gap-2 rounded-md bg-[var(--color-accent)] px-5 text-sm font-semibold text-white transition-transform hover:scale-[1.02] active:scale-[0.98]"
           >
             <Radar className="h-4 w-4" />
             Open Case Intake

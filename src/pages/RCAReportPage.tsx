@@ -26,7 +26,7 @@ export function RCAReportPage() {
         </p>
         <Link
           to="/investigations/new"
-          className="glow-accent mt-6 inline-flex h-10 items-center gap-2 rounded-md bg-[var(--color-accent)] px-5 text-sm font-semibold text-[#0d1117]"
+          className="glow-accent mt-6 inline-flex h-10 items-center gap-2 rounded-md bg-[var(--color-accent)] px-5 text-sm font-semibold text-white"
         >
           Create Investigation
         </Link>
