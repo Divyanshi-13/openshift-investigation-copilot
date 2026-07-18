@@ -31,16 +31,16 @@ export function AiInvestigationEngine({ analysis }: AiInvestigationEngineProps) 
   }, [analysis.investigationHypothesis])
 
   return (
-    <section className="flex h-full min-h-0 flex-col bg-[var(--color-background)]">
-      <div className="border-b border-[var(--color-border-subtle)] px-4 py-2.5">
+    <section className="flex h-full min-h-0 flex-col bg-[var(--color-panel)]">
+      <div className="border-b border-[var(--color-border)] px-4 py-2.5">
         <h2 className="text-xs font-semibold uppercase tracking-[0.14em] text-[var(--color-muted)]">
           AI Investigation Engine
         </h2>
       </div>
 
       <div className="scrollbar-thin flex-1 space-y-4 overflow-y-auto p-4">
-        <div className="animate-fade-up relative overflow-hidden rounded-lg border border-[var(--color-danger)]/40 bg-gradient-to-br from-[var(--color-danger-soft)] via-[var(--color-surface)] to-[var(--color-surface)] p-4 panel-glow">
-          <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[var(--color-danger)] to-transparent" />
+        <div className="animate-fade-up relative overflow-hidden rounded-lg border border-[var(--color-danger)]/30 bg-white p-4 card-shadow">
+          <div className="absolute inset-x-0 top-0 h-1 bg-[var(--color-danger)]" />
           <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-[var(--color-danger)]">
             Current Problem
           </p>
@@ -57,7 +57,7 @@ export function AiInvestigationEngine({ analysis }: AiInvestigationEngineProps) 
           <p className="mb-3 text-[10px] font-semibold uppercase tracking-[0.14em] text-[var(--color-muted)]">
             AI Reasoning Timeline
           </p>
-          <ol className="relative space-y-0 border-l border-[var(--color-border)] pl-4">
+          <ol className="relative space-y-0 border-l-2 border-[var(--color-border)] pl-4">
             {reasoningSteps.map((step, index) => {
               const done = index <= activeStep
               const current = index === activeStep
@@ -72,10 +72,10 @@ export function AiInvestigationEngine({ analysis }: AiInvestigationEngineProps) 
                 >
                   <span
                     className={cn(
-                      'absolute -left-[1.3rem] top-1 h-2.5 w-2.5 rounded-full border',
+                      'absolute -left-[1.45rem] top-1 h-2.5 w-2.5 rounded-full border-2',
                       done
                         ? 'border-[var(--color-accent)] bg-[var(--color-accent)]'
-                        : 'border-[var(--color-border)] bg-[var(--color-background)]',
+                        : 'border-[var(--color-border)] bg-white',
                       current && 'animate-pulse-soft',
                     )}
                   />
@@ -112,14 +112,13 @@ export function AiInvestigationEngine({ analysis }: AiInvestigationEngineProps) 
                 <article
                   key={h.id}
                   className={cn(
-                    'animate-fade-up rounded-lg border p-3 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_8px_24px_rgba(0,0,0,0.35)]',
+                    'animate-fade-up rounded-lg border bg-white p-3 card-shadow transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md',
                     tone.border,
-                    tone.bg,
                   )}
                   style={{ animationDelay: `${120 + index * 60}ms` }}
                 >
                   <div className="flex items-start justify-between gap-3">
-                    <h4 className="text-sm font-semibold">{h.rootCause}</h4>
+                    <h4 className="text-sm font-semibold text-[var(--color-foreground)]">{h.rootCause}</h4>
                     <span className={cn('shrink-0 text-sm font-bold tabular-nums', tone.text)}>
                       {h.relevanceScore}%
                     </span>
@@ -127,7 +126,7 @@ export function AiInvestigationEngine({ analysis }: AiInvestigationEngineProps) 
                   <p className={cn('mt-1 text-[11px] font-medium uppercase tracking-[0.1em]', tone.text)}>
                     Confidence
                   </p>
-                  <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-black/30">
+                  <div className="mt-2 h-2 overflow-hidden rounded-full bg-[var(--color-panel)]">
                     <div
                       className={cn('h-full rounded-full transition-all duration-700', tone.bar)}
                       style={{ width: `${width}%` }}
@@ -153,23 +152,20 @@ export function AiInvestigationEngine({ analysis }: AiInvestigationEngineProps) 
 function confidenceTone(score: number) {
   if (score >= 80) {
     return {
-      border: 'border-[var(--color-danger)]/45',
-      bg: 'bg-[var(--color-danger-soft)]',
+      border: 'border-[var(--color-danger)]/30',
       text: 'text-[var(--color-danger)]',
       bar: 'bg-gradient-to-r from-[var(--color-orange)] to-[var(--color-danger)]',
     }
   }
   if (score >= 50) {
     return {
-      border: 'border-[var(--color-warning)]/45',
-      bg: 'bg-[var(--color-warning-soft)]',
+      border: 'border-[var(--color-warning)]/30',
       text: 'text-[var(--color-warning)]',
       bar: 'bg-[var(--color-warning)]',
     }
   }
   return {
     border: 'border-[var(--color-border)]',
-    bg: 'bg-[var(--color-surface)]',
     text: 'text-[var(--color-muted)]',
     bar: 'bg-[var(--color-muted-foreground)]',
   }

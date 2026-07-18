@@ -14,23 +14,23 @@ export type ComponentFlowNode = Node<ComponentNodeData, 'component'>
 
 const statusMeta: Record<
   HealthStatus,
-  { emoji: string; ring: string; text: string; pulse: boolean }
+  { dot: string; ring: string; text: string; pulse: boolean }
 > = {
   failed: {
-    emoji: '🔴',
-    ring: 'border-[var(--color-danger)]/70 shadow-[0_0_20px_rgba(240,68,56,0.25)]',
+    dot: 'bg-[var(--color-danger)]',
+    ring: 'border-[var(--color-danger)]/50 shadow-sm',
     text: 'text-[var(--color-danger)]',
     pulse: true,
   },
   warning: {
-    emoji: '🟡',
-    ring: 'border-[var(--color-warning)]/70 shadow-[0_0_16px_rgba(240,180,41,0.2)]',
+    dot: 'bg-[var(--color-warning)]',
+    ring: 'border-[var(--color-warning)]/50 shadow-sm',
     text: 'text-[var(--color-warning)]',
     pulse: false,
   },
   healthy: {
-    emoji: '🟢',
-    ring: 'border-[var(--color-success)]/60',
+    dot: 'bg-[var(--color-success)]',
+    ring: 'border-[var(--color-success)]/50 shadow-sm',
     text: 'text-[var(--color-success)]',
     pulse: false,
   },
@@ -42,7 +42,7 @@ function ComponentNodeComponent({ data }: NodeProps<ComponentFlowNode>) {
   return (
     <div
       className={cn(
-        'min-w-[168px] rounded-lg border bg-[var(--color-surface)] px-3 py-2.5 transition-transform duration-200 hover:-translate-y-0.5 hover:scale-[1.02]',
+        'min-w-[168px] rounded-lg border bg-white px-3 py-2.5 transition-transform duration-200 hover:-translate-y-0.5 hover:scale-[1.02]',
         meta.ring,
         meta.pulse && 'animate-node-pulse',
       )}
@@ -55,10 +55,11 @@ function ComponentNodeComponent({ data }: NodeProps<ComponentFlowNode>) {
       <p className="text-sm font-semibold tracking-tight text-[var(--color-foreground)]">
         {data.label}
       </p>
-      <p className={cn('mt-1 text-xs font-medium', meta.text)}>
-        {meta.emoji} {data.statusLabel}
+      <p className={cn('mt-1 flex items-center gap-1.5 text-xs font-medium', meta.text)}>
+        <span className={cn('inline-block h-2 w-2 rounded-full', meta.dot)} />
+        {data.statusLabel}
       </p>
-      <p className="mt-1 text-[10px] uppercase tracking-[0.1em] text-[var(--color-muted-foreground)]">
+      <p className="mt-1 text-[10px] uppercase tracking-[0.1em] text-[var(--color-muted)]">
         Issues: {data.issueCount}
       </p>
       <Handle

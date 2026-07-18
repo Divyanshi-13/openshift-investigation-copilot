@@ -27,7 +27,7 @@ export function InvestigationAssistant({ analysis }: InvestigationAssistantProps
     <div className="pointer-events-none fixed bottom-5 right-5 z-50 flex flex-col items-end gap-3">
       <div
         className={cn(
-          'pointer-events-auto w-[340px] origin-bottom-right overflow-hidden rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] shadow-[0_20px_60px_rgba(0,0,0,0.55)] transition-all duration-200',
+          'pointer-events-auto w-[340px] origin-bottom-right overflow-hidden rounded-xl border border-[var(--color-border)] bg-white shadow-lg transition-all duration-200',
           open
             ? 'translate-y-0 scale-100 opacity-100'
             : 'pointer-events-none translate-y-2 scale-95 opacity-0',
@@ -37,7 +37,7 @@ export function InvestigationAssistant({ analysis }: InvestigationAssistantProps
           <div className="flex items-center gap-2">
             <Zap className="h-3.5 w-3.5 text-[var(--color-accent)]" />
             <div>
-              <p className="text-sm font-semibold">Investigation Assistant</p>
+              <p className="text-sm font-semibold text-[var(--color-foreground)]">Investigation Assistant</p>
               <p className="text-[10px] text-[var(--color-muted)]">
                 Guided next moves — not a chat thread
               </p>
@@ -46,7 +46,7 @@ export function InvestigationAssistant({ analysis }: InvestigationAssistantProps
           <button
             type="button"
             onClick={() => setOpen(false)}
-            className="rounded p-1 text-[var(--color-muted)] hover:bg-[var(--color-surface-elevated)] hover:text-[var(--color-foreground)]"
+            className="rounded p-1 text-[var(--color-muted)] hover:bg-[var(--color-panel)] hover:text-[var(--color-foreground)]"
           >
             <X className="h-4 w-4" />
           </button>
@@ -70,7 +70,7 @@ export function InvestigationAssistant({ analysis }: InvestigationAssistantProps
           ))}
 
           {guidance && (
-            <div className="animate-fade-up rounded-md border border-[var(--color-border)] bg-[var(--color-background)] p-3 text-sm leading-relaxed text-[var(--color-muted)]">
+            <div className="animate-fade-up rounded-md border border-[var(--color-border)] bg-[var(--color-panel)] p-3 text-sm leading-relaxed text-[var(--color-muted)]">
               {guidance}
             </div>
           )}
@@ -80,7 +80,7 @@ export function InvestigationAssistant({ analysis }: InvestigationAssistantProps
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
-        className="pointer-events-auto inline-flex h-12 items-center gap-2 rounded-full border border-[var(--color-accent)]/50 bg-[var(--color-accent)] px-4 text-sm font-semibold text-white shadow-[0_0_24px_rgba(238,0,0,0.3)] transition-transform hover:scale-[1.03] active:scale-[0.98]"
+        className="pointer-events-auto inline-flex h-12 items-center gap-2 rounded-full bg-[var(--color-accent)] px-4 text-sm font-semibold text-white shadow-lg transition-all hover:bg-[var(--color-accent-hover)] hover:shadow-xl active:scale-[0.98]"
       >
         <MessageSquareText className="h-4 w-4" />
         Assistant
@@ -108,6 +108,6 @@ function getGuidance(
 
   const top = analysis.hypotheses[0]
   return top
-    ? `Test “${top.rootCause}” first (confidence ${top.relevanceScore}%). Validate with: \`${analysis.nextAction.command}\`.`
+    ? `Test "${top.rootCause}" first (confidence ${top.relevanceScore}%). Validate with: \`${analysis.nextAction.command}\`.`
     : 'No hypothesis ranked yet — gather more ClusterOperator and node evidence.'
 }

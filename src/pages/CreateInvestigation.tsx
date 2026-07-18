@@ -38,7 +38,7 @@ const textDefaults = defaultScenario
     }
 
 const selectClass =
-  'flex h-10 w-full rounded-md border border-[var(--color-border)] bg-[var(--color-background)] px-3 py-2 text-sm text-[var(--color-foreground)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-accent)]'
+  'flex h-10 w-full rounded-md border border-[var(--color-border)] bg-white px-3 py-2 text-sm text-[var(--color-foreground)] shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-accent)] focus-visible:border-[var(--color-accent)]'
 
 export function CreateInvestigation() {
   const navigate = useNavigate()
@@ -137,7 +137,7 @@ export function CreateInvestigation() {
           <Stethoscope className="h-3.5 w-3.5" />
           Guided Case Intake
         </div>
-        <h1 className="gradient-text text-2xl font-bold tracking-tight sm:text-3xl">
+        <h1 className="text-2xl font-extrabold tracking-tight text-[var(--color-foreground)] sm:text-3xl">
           New Investigation
         </h1>
         <p className="mt-2 text-sm text-[var(--color-muted)]">
@@ -145,7 +145,7 @@ export function CreateInvestigation() {
           intake to curated OpenShift scenarios — not a chatbot.
         </p>
         <div className="mt-3 flex items-center gap-2">
-          <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-[var(--color-background)]">
+          <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-[var(--color-border-subtle)]">
             <div
               className="h-full rounded-full bg-[var(--color-accent)] transition-all duration-500"
               style={{ width: `${(filledCount / 5) * 100}%` }}
@@ -290,7 +290,7 @@ export function CreateInvestigation() {
               </div>
             </div>
 
-            <label className="flex cursor-pointer items-center gap-3 rounded-md border border-[var(--color-border)] bg-[var(--color-background)] px-3 py-3 text-sm transition-colors hover:border-[var(--color-accent)]/50">
+            <label className="flex cursor-pointer items-center gap-3 rounded-md border border-[var(--color-border)] bg-white px-3 py-3 text-sm shadow-sm transition-colors hover:border-[var(--color-accent)]/50">
               <input
                 type="checkbox"
                 checked={mustGatherAvailable}

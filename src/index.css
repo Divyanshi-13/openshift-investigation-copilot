@@ -1,32 +1,48 @@
 @import "tailwindcss";
 
 @theme {
-  --font-sans: "Red Hat Display", "Red Hat Text", "IBM Plex Sans", "Segoe UI", ui-sans-serif, system-ui, sans-serif;
-  --font-mono: "Red Hat Mono", "IBM Plex Mono", "SF Mono", "Cascadia Code", ui-monospace, Menlo, monospace;
+  --font-sans: "Red Hat Display", "Red Hat Text", "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "Red Hat Mono", "JetBrains Mono", ui-monospace, monospace;
 
-  --color-background: #0f1214;
-  --color-surface: #1a1d21;
-  --color-surface-elevated: #212427;
-  --color-panel: #151719;
-  --color-border: #3c3f42;
-  --color-border-subtle: #2a2d30;
-  --color-foreground: #e0e0e0;
-  --color-muted: #8a8d90;
-  --color-muted-foreground: #6a6e73;
+  /* Light enterprise palette */
+  --color-background: #f0f0f0;
+  --color-surface: #ffffff;
+  --color-surface-elevated: #ffffff;
+  --color-panel: #f5f5f5;
+  --color-border: #d2d2d2;
+  --color-border-subtle: #e8e8e8;
+  --color-foreground: #151515;
+  --color-muted: #6a6e73;
+  --color-muted-foreground: #8a8d90;
+
+  /* Dark masthead/sidebar */
+  --color-chrome: #151515;
+  --color-chrome-secondary: #212427;
+  --color-chrome-text: #e0e0e0;
+  --color-chrome-muted: #8a8d90;
+  --color-chrome-border: #3c3f42;
+
+  /* Red Hat brand */
   --color-accent: #ee0000;
-  --color-accent-soft: rgba(238, 0, 0, 0.12);
-  --color-accent-glow: rgba(238, 0, 0, 0.35);
-  --color-accent-hover: #ff4d4d;
+  --color-accent-soft: rgba(238, 0, 0, 0.06);
+  --color-accent-glow: rgba(238, 0, 0, 0.18);
+  --color-accent-hover: #cc0000;
+
+  /* Status palette */
   --color-success: #3e8635;
   --color-warning: #f0ab00;
   --color-danger: #c9190b;
   --color-orange: #ec7a08;
-  --color-info: #2b9af3;
-  --color-danger-soft: rgba(201, 25, 11, 0.14);
-  --color-warning-soft: rgba(240, 171, 0, 0.14);
-  --color-success-soft: rgba(62, 134, 53, 0.14);
-  --color-orange-soft: rgba(236, 122, 8, 0.14);
-  --color-info-soft: rgba(43, 154, 243, 0.12);
+  --color-info: #0066cc;
+  --color-purple: #6753ac;
+
+  /* Soft status backgrounds */
+  --color-danger-soft: rgba(201, 25, 11, 0.08);
+  --color-warning-soft: rgba(240, 171, 0, 0.08);
+  --color-success-soft: rgba(62, 134, 53, 0.08);
+  --color-orange-soft: rgba(236, 122, 8, 0.08);
+  --color-info-soft: rgba(0, 102, 204, 0.08);
+  --color-purple-soft: rgba(103, 83, 172, 0.08);
 }
 
 @layer base {
@@ -45,16 +61,14 @@
     margin: 0;
     font-family: var(--font-sans);
     background-color: var(--color-background);
-    background-image:
-      linear-gradient(180deg, rgba(238, 0, 0, 0.03), transparent 220px),
-      radial-gradient(ellipse 80% 50% at 50% -20%, rgba(238, 0, 0, 0.06), transparent);
     color: var(--color-foreground);
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
   }
 
   ::selection {
-    background: rgba(238, 0, 0, 0.3);
+    background: rgba(238, 0, 0, 0.15);
+    color: #151515;
   }
 
   a {
@@ -73,13 +87,31 @@
 @layer utilities {
   .scrollbar-thin {
     scrollbar-width: thin;
-    scrollbar-color: #3c3f42 transparent;
+    scrollbar-color: #c8c8c8 transparent;
   }
 
   .panel-glow {
     box-shadow:
-      inset 0 1px 0 rgba(255, 255, 255, 0.04),
-      0 0 0 1px rgba(42, 51, 64, 0.8);
+      0 1px 3px rgba(0, 0, 0, 0.06),
+      0 0 0 1px rgba(0, 0, 0, 0.04);
+  }
+
+  .card-shadow {
+    box-shadow:
+      0 1px 2px rgba(0, 0, 0, 0.05),
+      0 1px 3px rgba(0, 0, 0, 0.04);
+  }
+
+  .card-shadow-md {
+    box-shadow:
+      0 4px 6px -1px rgba(0, 0, 0, 0.06),
+      0 2px 4px -2px rgba(0, 0, 0, 0.04);
+  }
+
+  .card-shadow-lg {
+    box-shadow:
+      0 10px 15px -3px rgba(0, 0, 0, 0.06),
+      0 4px 6px -4px rgba(0, 0, 0, 0.04);
   }
 
   .animate-fade-up {
@@ -102,8 +134,12 @@
     animation: float 6s ease-in-out infinite;
   }
 
+  .animate-slide-in {
+    animation: slideIn 0.3s ease-out both;
+  }
+
   .gradient-text {
-    background: linear-gradient(135deg, #ee0000 0%, #ff4d4d 40%, #ff8a8a 100%);
+    background: linear-gradient(135deg, #c9190b 0%, #ee0000 50%, #a30000 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -118,39 +154,63 @@
 
   .hero-grid {
     background-image:
-      linear-gradient(rgba(238, 0, 0, 0.04) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(238, 0, 0, 0.04) 1px, transparent 1px);
+      linear-gradient(rgba(0, 0, 0, 0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0, 0, 0, 0.03) 1px, transparent 1px);
     background-size: 40px 40px;
   }
 
   .glass-card {
-    background: rgba(26, 29, 33, 0.7);
+    background: rgba(255, 255, 255, 0.85);
     backdrop-filter: blur(12px);
-    border: 1px solid rgba(60, 63, 66, 0.6);
+    border: 1px solid rgba(210, 210, 210, 0.6);
   }
 
   .glow-accent {
-    box-shadow: 0 0 20px rgba(238, 0, 0, 0.15), 0 0 60px rgba(238, 0, 0, 0.05);
+    box-shadow: 0 0 20px rgba(238, 0, 0, 0.1), 0 4px 12px rgba(238, 0, 0, 0.06);
   }
 
   .glow-danger {
-    box-shadow: 0 0 20px rgba(201, 25, 11, 0.15), 0 0 60px rgba(201, 25, 11, 0.05);
+    box-shadow: 0 0 20px rgba(201, 25, 11, 0.1), 0 4px 12px rgba(201, 25, 11, 0.06);
   }
 
   .glow-warning {
-    box-shadow: 0 0 20px rgba(240, 171, 0, 0.15), 0 0 60px rgba(240, 171, 0, 0.05);
+    box-shadow: 0 0 20px rgba(240, 171, 0, 0.1), 0 4px 12px rgba(240, 171, 0, 0.06);
   }
 
   .glow-success {
-    box-shadow: 0 0 20px rgba(62, 134, 53, 0.15), 0 0 60px rgba(62, 134, 53, 0.05);
+    box-shadow: 0 0 20px rgba(62, 134, 53, 0.1), 0 4px 12px rgba(62, 134, 53, 0.06);
   }
 
-  .category-border-networking { border-left: 3px solid #2b9af3; }
-  .category-border-authentication { border-left: 3px solid #a18fff; }
+  .category-border-networking { border-left: 3px solid #0066cc; }
+  .category-border-authentication { border-left: 3px solid #6753ac; }
   .category-border-storage { border-left: 3px solid #3e8635; }
   .category-border-performance { border-left: 3px solid #f0ab00; }
   .category-border-provisioning { border-left: 3px solid #ec7a08; }
   .category-border-upgrades { border-left: 3px solid #c9190b; }
+
+  .stat-card {
+    background: white;
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    padding: 20px;
+    transition: box-shadow 0.2s, transform 0.2s;
+  }
+
+  .stat-card:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    transform: translateY(-1px);
+  }
+
+  .masthead {
+    background: var(--color-chrome);
+    color: var(--color-chrome-text);
+    border-bottom: 2px solid var(--color-accent);
+  }
+
+  .sidebar-nav {
+    background: var(--color-chrome);
+    color: var(--color-chrome-text);
+  }
 }
 
 @keyframes fadeUp {
@@ -165,14 +225,13 @@
 }
 
 @keyframes pulseSoft {
-  0%,
-  100% {
+  0%, 100% {
     opacity: 1;
-    box-shadow: 0 0 0 0 rgba(240, 171, 0, 0.35);
+    box-shadow: 0 0 0 0 rgba(238, 0, 0, 0.25);
   }
   50% {
     opacity: 0.9;
-    box-shadow: 0 0 0 6px rgba(240, 171, 0, 0);
+    box-shadow: 0 0 0 6px rgba(238, 0, 0, 0);
   }
 }
 
@@ -188,18 +247,17 @@
 }
 
 @keyframes nodePulse {
-  0%,
-  100% {
+  0%, 100% {
     filter: drop-shadow(0 0 0 transparent);
   }
   50% {
-    filter: drop-shadow(0 0 8px rgba(201, 25, 11, 0.45));
+    filter: drop-shadow(0 0 8px rgba(201, 25, 11, 0.35));
   }
 }
 
 @keyframes float {
   0%, 100% { transform: translateY(0px); }
-  50% { transform: translateY(-8px); }
+  50% { transform: translateY(-6px); }
 }
 
 @keyframes shimmer {
@@ -207,22 +265,33 @@
   100% { background-position: 200% 0; }
 }
 
-/* React Flow dark overrides */
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* React Flow light overrides */
 .react-flow__controls {
   border: 1px solid var(--color-border) !important;
   border-radius: 8px !important;
   overflow: hidden;
-  box-shadow: none !important;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08) !important;
 }
 
 .react-flow__controls-button {
-  background: var(--color-surface) !important;
+  background: white !important;
   border-bottom: 1px solid var(--color-border) !important;
   fill: var(--color-muted) !important;
 }
 
 .react-flow__controls-button:hover {
-  background: var(--color-surface-elevated) !important;
+  background: var(--color-panel) !important;
 }
 
 .react-flow__attribution {

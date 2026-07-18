@@ -3,18 +3,18 @@ import type { ButtonHTMLAttributes } from 'react'
 import { cn } from '@/lib/utils'
 
 const buttonVariants = cva(
-  'inline-flex items-center justify-center gap-2 rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-accent)] disabled:pointer-events-none disabled:opacity-50',
+  'inline-flex items-center justify-center gap-2 rounded-md text-sm font-semibold transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-accent)] disabled:pointer-events-none disabled:opacity-50',
   {
     variants: {
       variant: {
         default:
-          'bg-[var(--color-accent)] text-white hover:bg-[var(--color-accent-hover)]',
+          'bg-[var(--color-accent)] text-white shadow-sm hover:bg-[var(--color-accent-hover)] active:scale-[0.98]',
         secondary:
-          'bg-[var(--color-surface-elevated)] text-[var(--color-foreground)] border border-[var(--color-border)] hover:bg-[#2a2d30]',
+          'bg-white text-[var(--color-foreground)] border border-[var(--color-border)] shadow-sm hover:bg-[var(--color-panel)] active:scale-[0.98]',
         ghost:
-          'text-[var(--color-muted)] hover:bg-[var(--color-surface-elevated)] hover:text-[var(--color-foreground)]',
+          'text-[var(--color-muted)] hover:bg-[var(--color-panel)] hover:text-[var(--color-foreground)]',
         outline:
-          'border border-[var(--color-border)] bg-transparent text-[var(--color-foreground)] hover:bg-[var(--color-surface-elevated)]',
+          'border border-[var(--color-border)] bg-transparent text-[var(--color-foreground)] hover:bg-[var(--color-panel)]',
       },
       size: {
         default: 'h-9 px-4 py-2',

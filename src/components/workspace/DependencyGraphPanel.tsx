@@ -65,12 +65,12 @@ export function DependencyGraphPanel({ graph }: DependencyGraphPanelProps) {
         type: 'smoothstep',
         animated: true,
         style: {
-          stroke: '#ee0000',
+          stroke: '#c9190b',
           strokeWidth: 1.6,
         },
         markerEnd: {
           type: MarkerType.ArrowClosed,
-          color: '#ee0000',
+          color: '#c9190b',
           width: 16,
           height: 16,
         },
@@ -79,8 +79,8 @@ export function DependencyGraphPanel({ graph }: DependencyGraphPanelProps) {
   )
 
   return (
-    <section className="flex h-full min-h-0 flex-col border-t border-[var(--color-border)] bg-[var(--color-panel)]">
-      <div className="flex items-center justify-between border-b border-[var(--color-border-subtle)] px-4 py-2">
+    <section className="flex h-full min-h-0 flex-col border-t border-[var(--color-border)] bg-white">
+      <div className="flex items-center justify-between border-b border-[var(--color-border)] px-4 py-2">
         <div>
           <h2 className="text-xs font-semibold uppercase tracking-[0.14em] text-[var(--color-muted)]">
             Dependency Graph
@@ -89,10 +89,10 @@ export function DependencyGraphPanel({ graph }: DependencyGraphPanelProps) {
             Interactive failure cascade — hover nodes to inspect
           </p>
         </div>
-        <div className="flex items-center gap-3 text-[11px] text-[var(--color-muted)]">
-          <span>🔴 Failed</span>
-          <span>🟡 Warning</span>
-          <span>🟢 Healthy</span>
+        <div className="flex items-center gap-3 text-[11px] font-medium text-[var(--color-muted)]">
+          <span className="flex items-center gap-1"><span className="inline-block h-2 w-2 rounded-full bg-[#c9190b]" /> Failed</span>
+          <span className="flex items-center gap-1"><span className="inline-block h-2 w-2 rounded-full bg-[#f0ab00]" /> Warning</span>
+          <span className="flex items-center gap-1"><span className="inline-block h-2 w-2 rounded-full bg-[#3e8635]" /> Healthy</span>
         </div>
       </div>
       <div className="min-h-0 flex-1">
@@ -106,9 +106,9 @@ export function DependencyGraphPanel({ graph }: DependencyGraphPanelProps) {
           nodesConnectable={false}
           elementsSelectable
           proOptions={{ hideAttribution: true }}
-          className="bg-[var(--color-background)]"
+          className="bg-[var(--color-panel)]"
         >
-          <Background color="#3c3f42" gap={20} size={1} />
+          <Background color="#d2d2d2" gap={20} size={1} />
           <Controls showInteractive={false} />
         </ReactFlow>
       </div>

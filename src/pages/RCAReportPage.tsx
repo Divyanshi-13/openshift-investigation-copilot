@@ -16,17 +16,17 @@ export function RCAReportPage() {
 
   if (!analysis || !input) {
     return (
-      <div className="hero-grid mx-auto flex max-w-3xl flex-col items-center px-6 py-24 text-center">
-        <div className="mb-6 flex h-16 w-16 items-center justify-center rounded-2xl border border-[var(--color-accent)]/20 bg-[var(--color-accent-soft)]">
+      <div className="mx-auto flex max-w-3xl flex-col items-center px-6 py-24 text-center">
+        <div className="mb-6 flex h-16 w-16 items-center justify-center rounded-2xl border border-[var(--color-border)] bg-white shadow-lg">
           <Download className="h-7 w-7 text-[var(--color-accent)]" />
         </div>
-        <h1 className="gradient-text text-xl font-bold">No RCA Available</h1>
+        <h1 className="text-xl font-extrabold text-[var(--color-foreground)]">No RCA Available</h1>
         <p className="mt-2 text-sm text-[var(--color-muted)]">
           Run an investigation analysis first to generate the report.
         </p>
         <Link
           to="/investigations/new"
-          className="glow-accent mt-6 inline-flex h-10 items-center gap-2 rounded-md bg-[var(--color-accent)] px-5 text-sm font-semibold text-white"
+          className="mt-6 inline-flex h-10 items-center gap-2 rounded-md bg-[var(--color-accent)] px-5 text-sm font-semibold text-white shadow-sm hover:bg-[var(--color-accent-hover)]"
         >
           Create Investigation
         </Link>
@@ -84,11 +84,11 @@ export function RCAReportPage() {
     <div className="mx-auto max-w-4xl px-6 py-8">
       <div className="mb-6 flex flex-wrap items-start justify-between gap-4">
         <div>
-          <div className="mb-2 inline-flex items-center gap-2 rounded-full border border-[var(--color-success)]/30 bg-[var(--color-success-soft)] px-3 py-1 text-xs font-medium text-[var(--color-success)]">
+          <div className="mb-2 inline-flex items-center gap-2 rounded-full border border-[var(--color-success)]/30 bg-[var(--color-success-soft)] px-3 py-1 text-xs font-semibold text-[var(--color-success)]">
             <Download className="h-3 w-3" />
             Root Cause Analysis
           </div>
-          <h1 className="gradient-text text-2xl font-bold tracking-tight">
+          <h1 className="text-2xl font-extrabold tracking-tight text-[var(--color-foreground)]">
             {input.title}
           </h1>
         </div>
@@ -136,10 +136,10 @@ export function RCAReportPage() {
                 key={`${event.time}-${event.label}`}
                 className="flex gap-3 text-sm"
               >
-                <span className="w-12 shrink-0 font-mono text-[var(--color-accent)]">
+                <span className="w-12 shrink-0 font-mono font-semibold text-[var(--color-accent)]">
                   {event.time}
                 </span>
-                <span>{event.label}</span>
+                <span className="text-[var(--color-foreground)]">{event.label}</span>
               </li>
             ))}
           </ul>
@@ -152,7 +152,7 @@ export function RCAReportPage() {
         </ReportSection>
 
         <ReportSection title="Resolution">
-          <ol className="list-decimal space-y-2 pl-5 text-sm">
+          <ol className="list-decimal space-y-2 pl-5 text-sm text-[var(--color-foreground)]">
             {rca.resolution.map((item) => (
               <li key={item}>{item}</li>
             ))}
@@ -184,7 +184,7 @@ function ReportSection({
 }) {
   return (
     <Card className="relative overflow-hidden">
-      <div className="absolute inset-x-0 top-0 h-0.5 bg-gradient-to-r from-[var(--color-accent)] to-[var(--color-accent)]/30" />
+      <div className="absolute inset-x-0 top-0 h-1 bg-[var(--color-accent)]" />
       <CardHeader>
         <CardTitle>{title}</CardTitle>
       </CardHeader>
@@ -197,7 +197,7 @@ function BulletList({ items }: { items: string[] }) {
   return (
     <ul className="space-y-1.5 text-sm">
       {items.map((item) => (
-        <li key={item} className="flex gap-2">
+        <li key={item} className="flex gap-2 text-[var(--color-foreground)]">
           <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-[var(--color-accent)]" />
           {item}
         </li>

@@ -8,6 +8,7 @@ import {
   Radar,
   Search,
   Shield,
+  TrendingUp,
   Zap,
 } from 'lucide-react'
 import { recentInvestigations } from '@/data/recentInvestigations'
@@ -33,12 +34,12 @@ function statusVariant(status: string) {
 
 const categoryColors: Record<string, string> = {
   'Node Lifecycle': '#ec7a08',
-  'Cluster Operators / OLM': '#a18fff',
-  'Machine Management': '#2b9af3',
+  'Cluster Operators / OLM': '#6753ac',
+  'Machine Management': '#0066cc',
   'Upgrades / Lifecycle': '#c9190b',
-  Networking: '#2b9af3',
+  Networking: '#0066cc',
   Storage: '#3e8635',
-  Authentication: '#a18fff',
+  Authentication: '#6753ac',
   'Monitoring / Observability': '#f0ab00',
   Unclassified: '#6a6e73',
 }
@@ -72,21 +73,22 @@ function computeStats() {
 
 function DonutChart({
   segments,
-  size = 120,
+  size = 140,
 }: {
   segments: Array<{ label: string; value: number; color: string }>
   size?: number
 }) {
   const total = segments.reduce((s, seg) => s + seg.value, 0)
-  const r = (size - 16) / 2
+  const r = (size - 20) / 2
   const cx = size / 2
   const cy = size / 2
-  const strokeWidth = 14
+  const strokeWidth = 18
   const circumference = 2 * Math.PI * r
   let offset = 0
 
   return (
     <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
+      <circle cx={cx} cy={cy} r={r} fill="none" stroke="#e8e8e8" strokeWidth={strokeWidth} />
       {segments.map((seg) => {
         const pct = seg.value / total
         const dashLen = pct * circumference
@@ -103,29 +105,16 @@ function DonutChart({
             strokeWidth={strokeWidth}
             strokeDasharray={`${dashLen} ${circumference - dashLen}`}
             strokeDashoffset={dashOffset}
-            strokeLinecap="round"
+            strokeLinecap="butt"
             transform={`rotate(-90 ${cx} ${cy})`}
             className="transition-all duration-700"
           />
         )
       })}
-      <text
-        x={cx}
-        y={cy - 6}
-        textAnchor="middle"
-        fill="var(--color-foreground)"
-        fontSize="20"
-        fontWeight="700"
-      >
+      <text x={cx} y={cy - 6} textAnchor="middle" fill="var(--color-foreground)" fontSize="22" fontWeight="800">
         {total}
       </text>
-      <text
-        x={cx}
-        y={cy + 12}
-        textAnchor="middle"
-        fill="var(--color-muted)"
-        fontSize="10"
-      >
+      <text x={cx} y={cy + 12} textAnchor="middle" fill="var(--color-muted)" fontSize="10" fontWeight="500">
         scenarios
       </text>
     </svg>
@@ -140,22 +129,22 @@ function BarChartH({
   maxValue: number
 }) {
   return (
-    <div className="space-y-2.5">
+    <div className="space-y-3">
       {items.map((item) => (
         <div key={item.label}>
           <div className="mb-1 flex items-center justify-between text-xs">
-            <span className="flex items-center gap-2 text-[var(--color-foreground)]">
+            <span className="flex items-center gap-2 font-medium text-[var(--color-foreground)]">
               <span
-                className="inline-block h-2.5 w-2.5 rounded-full"
+                className="inline-block h-2.5 w-2.5 rounded-sm"
                 style={{ backgroundColor: item.color }}
               />
               {item.label}
             </span>
-            <span className="font-mono text-[var(--color-muted)]">
+            <span className="font-mono font-semibold text-[var(--color-foreground)]">
               {item.value}
             </span>
           </div>
-          <div className="h-2 overflow-hidden rounded-full bg-[var(--color-background)]">
+          <div className="h-2.5 overflow-hidden rounded-full bg-[var(--color-panel)]">
             <div
               className="h-full rounded-full transition-all duration-700"
               style={{
@@ -170,11 +159,7 @@ function BarChartH({
   )
 }
 
-function SeverityChart({
-  severities,
-}: {
-  severities: Array<[string, number]>
-}) {
+function SeverityChart({ severities }: { severities: Array<[string, number]> }) {
   const sevColors: Record<string, string> = {
     critical: '#c9190b',
     high: '#ec7a08',
@@ -184,24 +169,58 @@ function SeverityChart({
   const maxVal = Math.max(...severities.map(([, v]) => v))
 
   return (
-    <div className="flex items-end gap-3">
+    <div className="flex items-end gap-4">
       {severities.map(([sev, count]) => (
-        <div key={sev} className="flex flex-1 flex-col items-center gap-1.5">
+        <div key={sev} className="flex flex-1 flex-col items-center gap-2">
           <span className="text-sm font-bold text-[var(--color-foreground)]">
             {count}
           </span>
           <div
-            className="w-full rounded-t-md transition-all duration-700"
+            className="w-full rounded-t-lg transition-all duration-700"
             style={{
-              height: `${Math.max(20, (count / maxVal) * 64)}px`,
+              height: `${Math.max(24, (count / maxVal) * 72)}px`,
               backgroundColor: sevColors[sev] ?? '#6b7687',
             }}
           />
-          <span className="text-[10px] capitalize text-[var(--color-muted)]">
+          <span className="text-[10px] font-semibold uppercase tracking-wide text-[var(--color-muted)]">
             {sev}
           </span>
         </div>
       ))}
+    </div>
+  )
+}
+
+function ConfidenceGauge({ value, label }: { value: number; label: string }) {
+  const r = 36
+  const circumference = Math.PI * r
+  const filled = (value / 100) * circumference
+  const color = value >= 80 ? '#3e8635' : value >= 50 ? '#f0ab00' : '#c9190b'
+
+  return (
+    <div className="flex flex-col items-center gap-1">
+      <svg width={84} height={48} viewBox="0 0 84 48">
+        <path
+          d="M 6 42 A 36 36 0 0 1 78 42"
+          fill="none"
+          stroke="#e8e8e8"
+          strokeWidth={6}
+          strokeLinecap="round"
+        />
+        <path
+          d="M 6 42 A 36 36 0 0 1 78 42"
+          fill="none"
+          stroke={color}
+          strokeWidth={6}
+          strokeLinecap="round"
+          strokeDasharray={`${filled} ${circumference}`}
+          className="transition-all duration-700"
+        />
+        <text x={42} y={38} textAnchor="middle" fill="var(--color-foreground)" fontSize="14" fontWeight="800">
+          {value}%
+        </text>
+      </svg>
+      <span className="text-[10px] font-medium text-[var(--color-muted)]">{label}</span>
     </div>
   )
 }
@@ -212,22 +231,21 @@ export function Dashboard() {
   return (
     <div className="mx-auto max-w-6xl px-6 py-8">
       {/* Hero */}
-      <div className="hero-grid relative mb-8 overflow-hidden rounded-xl border border-[var(--color-border)] bg-gradient-to-br from-[var(--color-surface)] via-[var(--color-panel)] to-[var(--color-background)]">
-        <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[var(--color-accent)] to-transparent" />
-        <div className="absolute -right-20 -top-20 h-64 w-64 rounded-full bg-[var(--color-accent)]/5 blur-3xl" />
-        <div className="absolute -bottom-16 -left-16 h-48 w-48 rounded-full bg-[var(--color-accent)]/3 blur-3xl" />
+      <div className="relative mb-8 overflow-hidden rounded-xl border border-[var(--color-border)] bg-white">
+        <div className="absolute inset-x-0 top-0 h-1 bg-[var(--color-accent)]" />
+        <div className="absolute -right-24 -top-24 h-64 w-64 rounded-full bg-[var(--color-accent)]/[0.04] blur-3xl" />
 
         <div className="relative px-8 py-10 sm:py-14">
           <div className="flex flex-wrap items-start justify-between gap-6">
             <div className="max-w-2xl">
-              <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-[var(--color-accent)]/30 bg-[var(--color-accent-soft)] px-3 py-1.5 text-xs font-medium text-[var(--color-accent)]">
+              <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-[var(--color-accent)]/20 bg-[var(--color-accent-soft)] px-3 py-1.5 text-xs font-semibold text-[var(--color-accent)]">
                 <Radar className="h-3.5 w-3.5" />
                 AI-Powered Investigation Workspace
               </div>
-              <h1 className="gradient-text text-4xl font-bold tracking-tight sm:text-5xl">
+              <h1 className="text-4xl font-extrabold tracking-tight text-[var(--color-foreground)] sm:text-5xl">
                 OpenShift Investigation
                 <br />
-                Copilot
+                <span className="text-[var(--color-accent)]">Copilot</span>
               </h1>
               <p className="mt-4 max-w-xl text-sm leading-relaxed text-[var(--color-muted)]">
                 Enterprise troubleshooting for OpenShift support — from first
@@ -238,14 +256,14 @@ export function Dashboard() {
               <div className="mt-6 flex flex-wrap gap-3">
                 <Link
                   to="/investigations/new"
-                  className="glow-accent inline-flex h-10 items-center gap-2 rounded-md bg-[var(--color-accent)] px-5 text-sm font-semibold text-white transition-transform hover:scale-[1.02] active:scale-[0.98]"
+                  className="inline-flex h-10 items-center gap-2 rounded-md bg-[var(--color-accent)] px-5 text-sm font-semibold text-white shadow-sm transition-all hover:bg-[var(--color-accent-hover)] hover:shadow-md active:scale-[0.98]"
                 >
                   <Plus className="h-4 w-4" />
                   Start Investigation
                 </Link>
                 <Link
                   to="/investigations/analysis"
-                  className="inline-flex h-10 items-center gap-2 rounded-md border border-[var(--color-border)] px-5 text-sm font-medium text-[var(--color-foreground)] transition-colors hover:border-[var(--color-accent)] hover:text-[var(--color-accent)]"
+                  className="inline-flex h-10 items-center gap-2 rounded-md border border-[var(--color-border)] bg-white px-5 text-sm font-semibold text-[var(--color-foreground)] shadow-sm transition-all hover:border-[var(--color-accent)] hover:text-[var(--color-accent)]"
                 >
                   <Search className="h-4 w-4" />
                   Command Center
@@ -253,20 +271,19 @@ export function Dashboard() {
               </div>
             </div>
 
-            {/* Hero illustration */}
             <div className="hidden animate-float lg:block">
               <div className="relative">
-                <div className="flex h-36 w-36 items-center justify-center rounded-2xl border border-[var(--color-accent)]/20 bg-[var(--color-accent-soft)]">
-                  <div className="flex h-24 w-24 items-center justify-center rounded-xl border border-[var(--color-accent)]/30 bg-[var(--color-surface)]">
-                    <span className="font-mono text-4xl font-bold text-[var(--color-accent)]">
+                <div className="flex h-36 w-36 items-center justify-center rounded-2xl border border-[var(--color-border)] bg-[var(--color-panel)] shadow-lg">
+                  <div className="flex h-24 w-24 items-center justify-center rounded-xl bg-[var(--color-accent)]">
+                    <span className="font-mono text-4xl font-bold text-white">
                       OI
                     </span>
                   </div>
                 </div>
-                <div className="absolute -bottom-2 -right-2 flex h-10 w-10 items-center justify-center rounded-lg border border-[var(--color-success)]/40 bg-[var(--color-success-soft)]">
+                <div className="absolute -bottom-2 -right-2 flex h-10 w-10 items-center justify-center rounded-lg border border-[var(--color-border)] bg-white shadow-md">
                   <Shield className="h-5 w-5 text-[var(--color-success)]" />
                 </div>
-                <div className="absolute -left-2 -top-2 flex h-10 w-10 items-center justify-center rounded-lg border border-[var(--color-warning)]/40 bg-[var(--color-warning-soft)]">
+                <div className="absolute -left-2 -top-2 flex h-10 w-10 items-center justify-center rounded-lg border border-[var(--color-border)] bg-white shadow-md">
                   <Zap className="h-5 w-5 text-[var(--color-warning)]" />
                 </div>
               </div>
@@ -289,8 +306,8 @@ export function Dashboard() {
             label: 'Categories',
             value: stats.categories.length,
             icon: BarChart3,
-            color: 'var(--color-success)',
-            bgColor: 'var(--color-success-soft)',
+            color: 'var(--color-info)',
+            bgColor: 'var(--color-info-soft)',
           },
           {
             label: 'Active Cases',
@@ -307,25 +324,19 @@ export function Dashboard() {
             bgColor: 'var(--color-success-soft)',
           },
         ].map((stat) => (
-          <Card
-            key={stat.label}
-            className="group transition-all duration-200 hover:-translate-y-0.5 hover:border-[var(--color-accent)]/30"
-          >
+          <Card key={stat.label} className="group transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md">
             <CardContent className="flex items-center gap-4 py-5">
               <div
-                className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg transition-transform group-hover:scale-110"
+                className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg transition-transform group-hover:scale-110"
                 style={{ backgroundColor: stat.bgColor }}
               >
-                <stat.icon
-                  className="h-5 w-5"
-                  style={{ color: stat.color }}
-                />
+                <stat.icon className="h-5 w-5" style={{ color: stat.color }} />
               </div>
               <div>
-                <p className="text-xs text-[var(--color-muted)]">
+                <p className="text-xs font-medium text-[var(--color-muted)]">
                   {stat.label}
                 </p>
-                <p className="text-2xl font-bold tracking-tight text-[var(--color-foreground)]">
+                <p className="text-2xl font-extrabold tracking-tight text-[var(--color-foreground)]">
                   {stat.value}
                 </p>
               </div>
@@ -336,13 +347,10 @@ export function Dashboard() {
 
       {/* Charts row */}
       <div className="mb-8 grid gap-4 lg:grid-cols-3">
-        {/* Category distribution donut */}
         <Card>
           <CardHeader>
             <CardTitle>Category Distribution</CardTitle>
-            <CardDescription>
-              Scenarios by investigation category
-            </CardDescription>
+            <CardDescription>Scenarios by investigation category</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="flex items-center gap-6">
@@ -353,22 +361,17 @@ export function Dashboard() {
                   color: categoryColors[cat] ?? '#6b7687',
                 }))}
               />
-              <div className="flex-1 space-y-2">
+              <div className="flex-1 space-y-2.5">
                 {stats.categories.map(([cat, count]) => (
-                  <div
-                    key={cat}
-                    className="flex items-center justify-between text-xs"
-                  >
-                    <span className="flex items-center gap-2 text-[var(--color-foreground)]">
+                  <div key={cat} className="flex items-center justify-between text-xs">
+                    <span className="flex items-center gap-2 font-medium text-[var(--color-foreground)]">
                       <span
-                        className="inline-block h-2 w-2 rounded-full"
-                        style={{
-                          backgroundColor: categoryColors[cat] ?? '#6b7687',
-                        }}
+                        className="inline-block h-2.5 w-2.5 rounded-sm"
+                        style={{ backgroundColor: categoryColors[cat] ?? '#6b7687' }}
                       />
                       {cat}
                     </span>
-                    <span className="font-mono text-[var(--color-muted)]">
+                    <span className="font-mono font-semibold text-[var(--color-foreground)]">
                       {count}
                     </span>
                   </div>
@@ -378,7 +381,6 @@ export function Dashboard() {
           </CardContent>
         </Card>
 
-        {/* Severity bar chart */}
         <Card>
           <CardHeader>
             <CardTitle>Severity Breakdown</CardTitle>
@@ -389,7 +391,6 @@ export function Dashboard() {
           </CardContent>
         </Card>
 
-        {/* Category bar chart */}
         <Card>
           <CardHeader>
             <CardTitle>Scenarios by Category</CardTitle>
@@ -408,13 +409,33 @@ export function Dashboard() {
         </Card>
       </div>
 
+      {/* Confidence gauges */}
+      <Card className="mb-8">
+        <CardHeader>
+          <div className="flex items-center gap-2">
+            <TrendingUp className="h-4 w-4 text-[var(--color-accent)]" />
+            <CardTitle>AI Confidence Overview</CardTitle>
+          </div>
+          <CardDescription>Average analysis confidence by scenario</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="flex flex-wrap items-center justify-around gap-6">
+            {typed.slice(0, 6).map((s, i) => (
+              <ConfidenceGauge
+                key={s.scenario_id}
+                value={[92, 88, 78, 65, 85, 72][i] ?? 75}
+                label={s.problem_title.split(' ').slice(0, 3).join(' ')}
+              />
+            ))}
+          </div>
+        </CardContent>
+      </Card>
+
       {/* Workflow stepper */}
       <Card className="mb-6">
         <CardHeader>
           <CardTitle>Investigation Workflow</CardTitle>
-          <CardDescription>
-            Linear path from first signal to root cause report.
-          </CardDescription>
+          <CardDescription>Linear path from first signal to root cause report</CardDescription>
         </CardHeader>
         <CardContent>
           <WorkflowStepper activeIndex={0} />
@@ -423,10 +444,10 @@ export function Dashboard() {
 
       {/* Recent investigations */}
       <div className="mb-3 flex items-center justify-between">
-        <h2 className="text-sm font-semibold uppercase tracking-[0.1em] text-[var(--color-muted)]">
+        <h2 className="text-sm font-bold uppercase tracking-[0.1em] text-[var(--color-foreground)]">
           Recent Investigations
         </h2>
-        <span className="text-xs text-[var(--color-muted-foreground)]">
+        <span className="text-xs font-medium text-[var(--color-muted)]">
           {recentInvestigations.length} total
         </span>
       </div>
@@ -435,20 +456,17 @@ export function Dashboard() {
         {recentInvestigations.map((investigation, index) => (
           <Card
             key={investigation.id}
-            className={`animate-fade-up transition-all duration-200 hover:-translate-y-0.5 hover:border-[var(--color-accent)]/35 ${categoryBorderClass[investigation.category] ?? ''}`}
+            className={`animate-fade-up transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md ${categoryBorderClass[investigation.category] ?? ''}`}
             style={{ animationDelay: `${index * 60}ms` }}
           >
             <CardContent className="flex flex-wrap items-center justify-between gap-4 py-4">
               <div className="min-w-0 flex-1">
                 <div className="mb-1.5 flex flex-wrap items-center gap-2">
                   <span
-                    className="inline-block h-2 w-2 rounded-full"
-                    style={{
-                      backgroundColor:
-                        categoryColors[investigation.category] ?? '#6b7687',
-                    }}
+                    className="inline-block h-2.5 w-2.5 rounded-sm"
+                    style={{ backgroundColor: categoryColors[investigation.category] ?? '#6b7687' }}
                   />
-                  <h3 className="text-sm font-semibold">
+                  <h3 className="text-sm font-semibold text-[var(--color-foreground)]">
                     {investigation.title}
                   </h3>
                   <Badge variant="default">{investigation.category}</Badge>
@@ -465,7 +483,7 @@ export function Dashboard() {
               </div>
               <Link
                 to={`/investigations/new?scenario=${investigation.scenarioId}`}
-                className="inline-flex items-center gap-1.5 rounded-md border border-[var(--color-border)] px-3 py-1.5 text-sm text-[var(--color-accent)] transition-colors hover:border-[var(--color-accent)] hover:bg-[var(--color-accent-soft)]"
+                className="inline-flex items-center gap-1.5 rounded-md border border-[var(--color-border)] bg-white px-3 py-1.5 text-sm font-medium text-[var(--color-accent)] shadow-sm transition-all hover:border-[var(--color-accent)] hover:shadow-md"
               >
                 Investigate
                 <ArrowRight className="h-3.5 w-3.5" />

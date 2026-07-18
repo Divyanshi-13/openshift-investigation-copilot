@@ -12,24 +12,23 @@ export function CommandHeader({
   status = 'idle',
 }: CommandHeaderProps) {
   return (
-    <header className="relative flex h-12 shrink-0 items-center gap-4 border-b border-[var(--color-border)] bg-[var(--color-surface)]/95 px-4 backdrop-blur-md">
-      <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-[var(--color-accent)]/40 to-transparent" />
+    <header className="masthead relative flex h-12 shrink-0 items-center gap-4 px-4">
       <Link to="/" className="flex min-w-0 items-center gap-2.5">
-        <div className="glow-accent flex h-8 w-8 items-center justify-center rounded-lg border border-[var(--color-accent)]/30 bg-[var(--color-accent-soft)] font-mono text-xs font-bold text-[var(--color-accent)]">
+        <div className="flex h-7 w-7 items-center justify-center rounded bg-[var(--color-accent)] font-mono text-[10px] font-bold text-white">
           OI
         </div>
         <div className="hidden min-w-0 sm:block">
-          <p className="truncate text-sm font-semibold tracking-tight">
+          <p className="truncate text-sm font-semibold tracking-tight text-white">
             OpenShift Investigation Copilot
           </p>
         </div>
       </Link>
 
       <div className="mx-auto flex min-w-0 max-w-xl flex-1 items-center justify-center gap-2 px-2">
-        <span className="hidden text-[11px] uppercase tracking-[0.12em] text-[var(--color-muted-foreground)] md:inline">
+        <span className="hidden text-[11px] uppercase tracking-[0.12em] text-[var(--color-chrome-muted)] md:inline">
           Investigation
         </span>
-        <p className="truncate text-sm font-medium text-[var(--color-foreground)]">
+        <p className="truncate text-sm font-medium text-white/90">
           {investigationTitle}
         </p>
       </div>
@@ -38,14 +37,14 @@ export function CommandHeader({
         <StatusPill status={status} />
         <Link
           to="/investigations/new"
-          className="hidden items-center gap-1 rounded border border-[var(--color-border)] px-2 py-1 text-xs text-[var(--color-muted)] transition-colors hover:border-[var(--color-accent)] hover:text-[var(--color-accent)] lg:inline-flex"
+          className="hidden items-center gap-1 rounded border border-[var(--color-chrome-border)] px-2 py-1 text-xs text-[var(--color-chrome-muted)] transition-colors hover:border-white/40 hover:text-white lg:inline-flex"
         >
           <Plus className="h-3 w-3" />
           New
         </Link>
         <Link
           to="/investigations/rca"
-          className="hidden items-center gap-1 rounded border border-[var(--color-border)] px-2 py-1 text-xs text-[var(--color-muted)] transition-colors hover:border-[var(--color-accent)] hover:text-[var(--color-accent)] lg:inline-flex"
+          className="hidden items-center gap-1 rounded border border-[var(--color-chrome-border)] px-2 py-1 text-xs text-[var(--color-chrome-muted)] transition-colors hover:border-white/40 hover:text-white lg:inline-flex"
         >
           <FileText className="h-3 w-3" />
           RCA
@@ -63,13 +62,13 @@ function StatusPill({
   return (
     <span
       className={cn(
-        'inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs font-medium',
+        'inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium',
         status === 'investigating' &&
-          'animate-pulse-soft border-[var(--color-warning)]/40 bg-[var(--color-warning-soft)] text-[var(--color-warning)]',
+          'animate-pulse-soft bg-[var(--color-warning)]/20 text-[var(--color-warning)]',
         status === 'resolved' &&
-          'border-[var(--color-success)]/40 bg-[var(--color-success-soft)] text-[var(--color-success)]',
+          'bg-[var(--color-success)]/20 text-[#4ade80]',
         status === 'idle' &&
-          'border-[var(--color-border)] bg-[var(--color-panel)] text-[var(--color-muted)]',
+          'bg-white/10 text-[var(--color-chrome-muted)]',
       )}
     >
       <Activity className="h-3 w-3" />

@@ -16,15 +16,15 @@ interface DependencyGraphProps {
 }
 
 const statusColor: Record<HealthStatus, string> = {
-  failed: '#f85149',
-  warning: '#d29922',
-  healthy: '#3fb950',
+  failed: '#c9190b',
+  warning: '#f0ab00',
+  healthy: '#3e8635',
 }
 
 const statusBg: Record<HealthStatus, string> = {
-  failed: 'rgba(248, 81, 73, 0.12)',
-  warning: 'rgba(210, 153, 34, 0.12)',
-  healthy: 'rgba(63, 185, 80, 0.12)',
+  failed: 'rgba(201, 25, 11, 0.08)',
+  warning: 'rgba(240, 171, 0, 0.08)',
+  healthy: 'rgba(62, 134, 53, 0.08)',
 }
 
 export function DependencyGraph({ graph }: DependencyGraphProps) {
@@ -37,14 +37,14 @@ export function DependencyGraph({ graph }: DependencyGraphProps) {
         style: {
           background: statusBg[node.status],
           border: `1px solid ${statusColor[node.status]}`,
-          color: '#e6edf3',
+          color: '#151515',
           borderRadius: 8,
           padding: '10px 16px',
           fontSize: 13,
           fontWeight: 600,
           width: 180,
           textAlign: 'center' as const,
-          boxShadow: `0 0 0 1px ${statusColor[node.status]}22`,
+          boxShadow: `0 1px 3px rgba(0,0,0,0.06)`,
         },
       })),
     [graph.nodes],
@@ -58,10 +58,10 @@ export function DependencyGraph({ graph }: DependencyGraphProps) {
         target: edge.target,
         type: 'smoothstep',
         animated: true,
-        style: { stroke: '#ee0000', strokeWidth: 1.5 },
+        style: { stroke: '#c9190b', strokeWidth: 1.5 },
         markerEnd: {
           type: MarkerType.ArrowClosed,
-          color: '#ee0000',
+          color: '#c9190b',
         },
       })),
     [graph.edges],
@@ -85,7 +85,7 @@ export function DependencyGraph({ graph }: DependencyGraphProps) {
         </div>
       </CardHeader>
       <CardContent>
-        <div className="h-[520px] overflow-hidden rounded-md border border-[var(--color-border)] bg-[var(--color-background)]">
+        <div className="h-[520px] overflow-hidden rounded-md border border-[var(--color-border)] bg-[var(--color-panel)]">
           <ReactFlow
             nodes={nodes}
             edges={edges}
@@ -95,11 +95,8 @@ export function DependencyGraph({ graph }: DependencyGraphProps) {
             elementsSelectable={false}
             proOptions={{ hideAttribution: true }}
           >
-            <Background color="#30363d" gap={18} size={1} />
-            <Controls
-              showInteractive={false}
-              className="!overflow-hidden !rounded-md !border ![border-color:var(--color-border)] ![background:var(--color-surface)]"
-            />
+            <Background color="#d2d2d2" gap={18} size={1} />
+            <Controls showInteractive={false} />
           </ReactFlow>
         </div>
       </CardContent>

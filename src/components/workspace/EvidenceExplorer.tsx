@@ -28,7 +28,7 @@ export function EvidenceExplorer({ input, analysis }: EvidenceExplorerProps) {
   const [openId, setOpenId] = useState<string | null>(items[0]?.id ?? null)
 
   return (
-    <section className="flex h-full min-h-0 flex-col border-r border-[var(--color-border)] bg-[var(--color-panel)]">
+    <section className="flex h-full min-h-0 flex-col border-r border-[var(--color-border)] bg-white">
       <div className="flex items-center justify-between border-b border-[var(--color-border-subtle)] px-3 py-2.5">
         <div>
           <h2 className="text-xs font-semibold uppercase tracking-[0.14em] text-[var(--color-muted)]">
@@ -86,7 +86,7 @@ export function EvidenceExplorer({ input, analysis }: EvidenceExplorerProps) {
                 )}
               >
                 <div className="overflow-hidden">
-                  <pre className="border-t border-[var(--color-border-subtle)] bg-[var(--color-background)] px-3 py-2 font-mono text-[11px] leading-relaxed text-[var(--color-muted)] whitespace-pre-wrap">
+                  <pre className="border-t border-[var(--color-border-subtle)] bg-[var(--color-panel)] px-3 py-2 font-mono text-[11px] leading-relaxed text-[var(--color-muted)] whitespace-pre-wrap">
                     {item.body}
                   </pre>
                 </div>

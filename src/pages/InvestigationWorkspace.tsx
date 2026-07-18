@@ -54,20 +54,20 @@ export function InvestigationWorkspace() {
     return (
       <div className="flex h-full flex-col">
         <CommandHeader status="idle" />
-        <div className="hero-grid flex flex-1 flex-col items-center justify-center gap-6 px-6 text-center">
+        <div className="flex flex-1 flex-col items-center justify-center gap-6 bg-[var(--color-background)] px-6 text-center">
           <div className="relative">
-            <div className="animate-float flex h-24 w-24 items-center justify-center rounded-2xl border border-[var(--color-accent)]/20 bg-[var(--color-accent-soft)]">
+            <div className="animate-float flex h-24 w-24 items-center justify-center rounded-2xl border border-[var(--color-border)] bg-white shadow-lg">
               <Workflow className="h-10 w-10 text-[var(--color-accent)]" />
             </div>
-            <div className="absolute -bottom-1 -right-1 flex h-8 w-8 items-center justify-center rounded-lg border border-[var(--color-warning)]/40 bg-[var(--color-warning-soft)]">
+            <div className="absolute -bottom-1 -right-1 flex h-8 w-8 items-center justify-center rounded-lg border border-[var(--color-border)] bg-white shadow-md">
               <Radar className="h-4 w-4 text-[var(--color-warning)]" />
             </div>
-            <div className="absolute -left-1 -top-1 flex h-8 w-8 items-center justify-center rounded-lg border border-[var(--color-success)]/40 bg-[var(--color-success-soft)]">
+            <div className="absolute -left-1 -top-1 flex h-8 w-8 items-center justify-center rounded-lg border border-[var(--color-border)] bg-white shadow-md">
               <Search className="h-4 w-4 text-[var(--color-success)]" />
             </div>
           </div>
           <div className="max-w-md">
-            <h1 className="gradient-text text-2xl font-bold tracking-tight">
+            <h1 className="text-2xl font-extrabold tracking-tight text-[var(--color-foreground)]">
               Investigation Command Center
             </h1>
             <p className="mt-3 text-sm leading-relaxed text-[var(--color-muted)]">
@@ -77,7 +77,7 @@ export function InvestigationWorkspace() {
           </div>
           <Link
             to="/investigations/new"
-            className="glow-accent inline-flex h-10 items-center gap-2 rounded-md bg-[var(--color-accent)] px-5 text-sm font-semibold text-white transition-transform hover:scale-[1.02] active:scale-[0.98]"
+            className="inline-flex h-10 items-center gap-2 rounded-md bg-[var(--color-accent)] px-5 text-sm font-semibold text-white shadow-sm transition-all hover:bg-[var(--color-accent-hover)] hover:shadow-md active:scale-[0.98]"
           >
             <Radar className="h-4 w-4" />
             Open Case Intake
