@@ -1,0 +1,247 @@
+[
+  {
+    "scenario_id": 1,
+    "problem_title": "MachineConfigPool Degraded due to SSHD Configuration Drift",
+    "category": "Node Lifecycle",
+    "severity": "high",
+    "symptoms": [
+      "MachineConfigPool 'worker' shows DEGRADED=True.",
+      "1 out of 5 worker nodes fails to update, reporting 'error applying configuration'.",
+      "ClusterOperator 'machine-config' reports Degraded."
+    ],
+    "openshift_commands": [
+      "oc get mcp worker",
+      "oc describe mcp worker",
+      "oc get machineconfigpool worker -o jsonpath='{.status.conditions[?(@.type==\"Degraded\")]}'",
+      "oc get node -l node-role.kubernetes.io/worker= -o custom-columns=NAME:.metadata.name,CONFIG:.metadata.annotations.machineconfiguration\\.openshift\\.io/currentConfig",
+      "oc logs -n openshift-machine-config-operator daemonset/machine-config-daemon -c machine-config-daemon --tail=100"
+    ],
+    "command_targets": ["either", "either", "either", "either", "must-gather"],
+    "important_findings": [
+      "The degraded node `worker-2.cluster.example.com` has a `currentConfig` that matches the desired config, but the MCD (Machine Config Daemon) logs show a checksum mismatch error.",
+      "MCD logs: 'failed to apply machine config: files exist but content is different: /etc/ssh/sshd_config'.",
+      "Manual out-of-band edit detected on `/etc/ssh/sshd_config` on `worker-2`."
+    ],
+    "possible_root_causes": [
+      "A sysadmin manually edited `/etc/ssh/sshd_config` directly on the host to change the Port or PermitRootLogin settings, causing the Machine Config Daemon's file integrity check to fail.",
+      "A third-party security logging agent altered the system configuration file outside the OpenShift GitOps/MachineConfig workflow."
+    ],
+    "confidence_ranking": "95%",
+    "recommended_next_troubleshooting_action": "Check the auditing logs or command history on `worker-2` to identify what modified `/etc/ssh/sshd_config`, or use `oc debug node/worker-2` to diff the file against the desired `MachineConfig` object.",
+    "final_rca": "The worker MachineConfigPool became degraded because a local, manual configuration change was made to `/etc/ssh/sshd_config` directly on node `worker-2`. This file drift caused a verification mismatch when the Machine Config Daemon attempted to reconcile the node state with the cluster's defined MachineConfig state.",
+    "related_articles": [
+      { "id": "7024531", "title": "MachineConfigPool Degraded due to file content mismatch" },
+      { "id": "6988120", "title": "Troubleshooting Machine Config Daemon apply failures" }
+    ],
+    "known_bugs": [
+      {
+        "id": "OCPBUGS-18442",
+        "summary": "MCD reports cryptic checksum errors when sshd_config is edited out of band",
+        "fixedIn": "Documentation / operational guidance"
+      }
+    ],
+    "platform_tags": ["AWS", "Azure", "GCP", "bare-metal"]
+  },
+  {
+    "scenario_id": 2,
+    "problem_title": "Authentication Operator Degraded due to Expired Internal OAuth Secret",
+    "category": "Authentication",
+    "severity": "critical",
+    "symptoms": [
+      "Users cannot log into the OpenShift Web Console; hitting 500 Internal Server Error or infinite login loops.",
+      "ClusterOperator 'authentication' reports Degraded=True and Progressing=False.",
+      "API server logs show webhook authentication handshake failures."
+    ],
+    "openshift_commands": [
+      "oc get co authentication",
+      "oc describe co authentication",
+      "oc get pods -n openshift-authentication",
+      "oc logs deployment/oauth-openshift -n openshift-authentication --all-containers=true",
+      "oc get secrets -n openshift-authentication"
+    ],
+    "command_targets": ["either", "either", "either", "must-gather", "either"],
+    "important_findings": [
+      "The `oauth-openshift` pods are throwing repeating crash loops or error lines: 'x509: certificate has expired or is not yet valid'.",
+      "The operator status message states: 'IngressStateDegraded: The OAuth service is not ready: balancing routers not handling traffic'.",
+      "Closer look at secret `v4-0-config-system-session` reveals it hasn't rotated successfully due to an API server blocking webhook."
+    ],
+    "possible_root_causes": [
+      "The internal OAuth token signing/session validation secret expired, and the authentication operator failed to automatically rotate it due to transient control-plane locks.",
+      "A customized, user-provided ingress certificate expired or contains an incomplete chain, breaking internal API-to-OAuth routing communication."
+    ],
+    "confidence_ranking": "88%",
+    "recommended_next_troubleshooting_action": "Force a reconciliation cycle by deleting the degraded OAuth pods, or manually rotate/delete the internal session secret to trigger the operator's generation mechanism.",
+    "final_rca": "The Authentication Operator became degraded because the internal session signing secret (`v4-0-config-system-session`) expired and failed to automatically rotate. This broke the OAuth server token verification chain, cascading into widespread Web Console login failures.",
+    "related_articles": [
+      { "id": "7019984", "title": "Authentication operator Degraded with expired OAuth session secret" },
+      { "id": "6954402", "title": "OpenShift console login loop troubleshooting" }
+    ],
+    "known_bugs": [
+      {
+        "id": "OCPBUGS-22101",
+        "summary": "OAuth session secret rotation can stall under API webhook contention",
+        "fixedIn": "4.14.18 / 4.15.6"
+      }
+    ],
+    "platform_tags": ["AWS", "Azure", "GCP", "bare-metal"]
+  },
+  {
+    "scenario_id": 3,
+    "problem_title": "Ingress Router Failure caused by AWS ELB Security Group Misconfiguration",
+    "category": "Networking",
+    "severity": "critical",
+    "symptoms": [
+      "All external apps hosted on `*.apps.cluster.domain` are unreachable (connection timeout).",
+      "ClusterOperator 'ingress' reports Available=True but routers are not receiving traffic.",
+      "Internal cluster networking works perfectly, and applications can be reached via `oc exec` inside the cluster."
+    ],
+    "openshift_commands": [
+      "oc get co ingress",
+      "oc get ingresscontroller default -n openshift-ingress-operator -o yaml",
+      "oc get pods -n openshift-ingress -o wide",
+      "oc get svc -n openshift-ingress",
+      "oc describe svc router-default -n openshift-ingress"
+    ],
+    "command_targets": ["either", "either", "either", "either", "live"],
+    "important_findings": [
+      "Ingress pods are healthy, running, and listening on ports 80 and 443.",
+      "The `router-default` LoadBalancer service shows a valid external AWS ELB DNS address.",
+      "AWS CloudTrail/CloudControl logs show a recent firewall or Security Group rule modification that dropped standard HTTP/HTTPS ingress traffic from `0.0.0.0/0`."
+    ],
+    "possible_root_causes": [
+      "An automated enterprise security policy script modified the AWS Security Groups attached to the public Load Balancer, removing port 80/443 public access rules.",
+      "The AWS Load Balancer subnets were re-mapped as private instead of public during an infrastructure sync tool run (e.g., Terraform drift)."
+    ],
+    "confidence_ranking": "92%",
+    "recommended_next_troubleshooting_action": "Verify network path using `curl -Iv` to the ELB URL, and inspect the AWS Console Security Group settings associated with the cluster's public load balancer.",
+    "final_rca": "External ingress routing failed completely because an out-of-band security automation tool altered the underlying AWS Security Group assigned to the public OpenShift Ingress Load Balancer. This blocked all external port 80 and 443 traffic before it could reach the functional Ingress router pods.",
+    "related_articles": [
+      { "id": "7031128", "title": "External routes time out while Ingress operator remains Available" },
+      { "id": "6990015", "title": "Troubleshooting OpenShift on AWS LoadBalancer security groups" }
+    ],
+    "known_bugs": [],
+    "platform_tags": ["AWS"]
+  },
+  {
+    "scenario_id": 4,
+    "problem_title": "ODF Storage Latency via Ceph OSD Disk I/O Bottleneck",
+    "category": "Storage",
+    "severity": "high",
+    "symptoms": [
+      "Applications utilizing Ceph block storage (RWO PVCs) experience severe disk write slowdowns and database timeouts.",
+      "OpenShift Data Foundation (ODF) dashboard flashes alerts: 'Cluster performance is degraded'.",
+      "Ceph cluster status shows `HEALTH_WARN` with sluggish OSD response times."
+    ],
+    "openshift_commands": [
+      "oc get storagecluster -n openshift-storage",
+      "oc rsh -n openshift-storage $(oc get pods -n openshift-storage -l app=rook-ceph-operator -o jsonpath='{.items[0].metadata.name}') ceph status",
+      "oc rsh -n openshift-storage $(oc get pods -n openshift-storage -l app=rook-ceph-operator -o jsonpath='{.items[0].metadata.name}') ceph osd perf",
+      "oc get pods -n openshift-storage -l app=rook-ceph-osd",
+      "oc logs -n openshift-storage -l app=rook-ceph-osd --tail=200"
+    ],
+    "command_targets": ["either", "live", "live", "either", "must-gather"],
+    "important_findings": [
+      "`ceph osd perf` reveals that `osd.3` has a commit latency of >500ms (normal is <10ms).",
+      "The node hosting `osd.3` shows extremely high `iostat` utilization (`%util` close to 100%).",
+      "Underlying storage volume is an AWS `gp3` disk that has completely exhausted its burst IOPS allocation credits."
+    ],
+    "possible_root_causes": [
+      "The underlying cloud provider disk (e.g., AWS gp3) hit its IOPS threshold limit due to an unpredicted application write spike, causing heavy throttling.",
+      "Physical disk failure or bad blocks on a bare-metal node leading to kernel retries and latency spikes in the Ceph daemon storage layer."
+    ],
+    "confidence_ranking": "90%",
+    "recommended_next_troubleshooting_action": "Check cloud provider performance metrics to confirm IOPS throttling, and consider scaling up the IOPS baseline provisioning for the affected OSD volumes.",
+    "final_rca": "Severe ODF storage latency was triggered by an application write surge that exhausted the AWS `gp3` disk burst IOPS credits on a specific OSD node. This caused the cloud provider to throttle disk performance, creating a bottleneck that degraded the entire Ceph storage cluster's replication speeds.",
+    "related_articles": [
+      { "id": "7042201", "title": "ODF / Ceph HEALTH_WARN with high OSD commit latency" },
+      { "id": "6975530", "title": "Cloud disk IOPS throttling impact on OpenShift Data Foundation" }
+    ],
+    "known_bugs": [
+      {
+        "id": "BZ-2189941",
+        "summary": "gp3 burst exhaustion can present as cluster-wide Ceph latency",
+        "fixedIn": "Operational remediation — raise baseline IOPS"
+      }
+    ],
+    "platform_tags": ["AWS", "bare-metal"]
+  },
+  {
+    "scenario_id": 5,
+    "problem_title": "Node NotReady due to Kubelet Disk Pressure and Log Exhaustion",
+    "category": "Node Lifecycle",
+    "severity": "critical",
+    "symptoms": [
+      "A critical compute node switches status to `NotReady`.",
+      "Pods running on that node immediately transition to `Unknown` or begin evicting.",
+      "Attempts to SSH or `oc debug` the node are extremely slow or timeout entirely."
+    ],
+    "openshift_commands": [
+      "oc get nodes",
+      "oc describe node worker-1.cluster.example.com",
+      "oc get events --field-selector involvedObject.kind=Node --sort-by='.metadata.creationTimestamp'",
+      "oc get node worker-1.cluster.example.com -o jsonpath='{.status.conditions[?(@.type==\"DiskPressure\")]}'"
+    ],
+    "command_targets": ["either", "either", "either", "either"],
+    "important_findings": [
+      "Node conditions show `DiskPressure: True`.",
+      "The `kubelet` log on the host node reveals: 'System OOM encountered or disk space exhausted. Kubelet stopped posting status'.",
+      "The root directory filesystem (`/var/log`) is confirmed to be at 100% capacity due to a rogue container writing un-rotated application logs straight to standard output at a massive volume."
+    ],
+    "possible_root_causes": [
+      "A misconfigured application pod bypasses log rotation limits and generates millions of lines of error stack traces, filling up `/var/log/pods`.",
+      "The node's local container runtime storage (`/var/lib/containers`) filled up due to stale image cache accumulation combined with a failed image garbage collection cycle."
+    ],
+    "confidence_ranking": "96%",
+    "recommended_next_troubleshooting_action": "Access the host machine directly via a cloud console or OOB management tool, locate the largest log directories in `/var/log/pods`, delete the rogue log file to clear immediate pressure, and check why log-rotate skipped it.",
+    "final_rca": "The compute node entered a `NotReady` state because an application pod fell into an error loop and generated massive amounts of stderr logs. This completely filled the host node's `/var/log` disk partition, causing `DiskPressure` evictions and ultimately locking up the Kubelet daemon process.",
+    "related_articles": [
+      { "id": "7008812", "title": "Node NotReady with DiskPressure from container log flood" },
+      { "id": "6921104", "title": "Recovering kubelet after filesystem exhaustion" }
+    ],
+    "known_bugs": [],
+    "platform_tags": ["AWS", "Azure", "GCP", "bare-metal"]
+  },
+  {
+    "scenario_id": 6,
+    "problem_title": "OpenShift Upgrade Failure via Machine Config Operator Stuck on Control Plane Rollout",
+    "category": "Upgrades / Lifecycle",
+    "severity": "high",
+    "symptoms": [
+      "Cluster upgrade from version 4.14 to 4.15 hangs indefinitely at 45% completion.",
+      "ClusterOperator 'machine-config' shows `Progressing=True`, `Degraded=False`, but hasn't updated its status in hours.",
+      "Cluster version status reports: 'Working towards 4.15.0: 3 of 6 nodes updated'."
+    ],
+    "openshift_commands": [
+      "oc get clusterversion",
+      "oc describe clusterversion",
+      "oc get co",
+      "oc get mcp master",
+      "oc get lease -n openshift-machine-config-operator"
+    ],
+    "command_targets": ["either", "either", "either", "either", "either"],
+    "important_findings": [
+      "The `master` MachineConfigPool indicates that 2 out of 3 control plane nodes have successfully updated, but `master-3` is stuck looping.",
+      "Inspecting `master-3` reveals a pending reboot state that never clears because an application deployment has an overly restrictive PodDisruptionBudget (PDB) on the control plane node.",
+      "The eviction API prevents the node from draining successfully to safely reboot."
+    ],
+    "possible_root_causes": [
+      "A user app or third-party monitoring daemonset deployed onto master nodes set `maxUnavailable: 0` or `minAvailable` rules in a PodDisruptionBudget, blocking the Kubelet upgrade drain operation.",
+      "Etcd cluster synchronization delays preventing the node from safely entering maintenance mode during the MachineConfig update rollout."
+    ],
+    "confidence_ranking": "89%",
+    "recommended_next_troubleshooting_action": "Run `oc get pdb --all-namespaces` to identify any blocking budgets that are currently protecting pods assigned to `master-3`, and temporarily scale down or remove the restrictive PDB.",
+    "final_rca": "The cluster upgrade failed to progress because a custom application running on the control plane nodes possessed a rigid PodDisruptionBudget (`maxUnavailable: 0`). This blocked the Machine Config Operator from draining `master-3`, preventing the node reboot required to apply the updated 4.15 CoreOS operating system image.",
+    "related_articles": [
+      { "id": "7053340", "title": "Upgrade stuck Progressing with MCP master waiting on drain" },
+      { "id": "6887721", "title": "PodDisruptionBudgets blocking control-plane node updates" }
+    ],
+    "known_bugs": [
+      {
+        "id": "OCPBUGS-15660",
+        "summary": "Restrictive PDBs on master nodes stall MCO upgrade reboot",
+        "fixedIn": "Operational — relax PDB during upgrade"
+      }
+    ],
+    "platform_tags": ["AWS", "Azure", "GCP", "bare-metal"]
+  }
+]

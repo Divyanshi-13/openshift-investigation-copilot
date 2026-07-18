@@ -1,0 +1,163 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "IBM Plex Sans", "Segoe UI", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", "SF Mono", "Cascadia Code", ui-monospace, Menlo, monospace;
+
+  --color-background: #0a0e14;
+  --color-surface: #11161d;
+  --color-surface-elevated: #171d25;
+  --color-panel: #0f141b;
+  --color-border: #2a3340;
+  --color-border-subtle: #1c2430;
+  --color-foreground: #e8edf4;
+  --color-muted: #8b96a8;
+  --color-muted-foreground: #6b7687;
+  --color-accent: #4da3ff;
+  --color-accent-soft: rgba(77, 163, 255, 0.12);
+  --color-accent-glow: rgba(77, 163, 255, 0.35);
+  --color-success: #3dd68c;
+  --color-warning: #f0b429;
+  --color-danger: #f04438;
+  --color-orange: #f79009;
+  --color-danger-soft: rgba(240, 68, 56, 0.14);
+  --color-warning-soft: rgba(240, 180, 41, 0.14);
+  --color-success-soft: rgba(61, 214, 140, 0.12);
+  --color-orange-soft: rgba(247, 144, 9, 0.14);
+}
+
+@layer base {
+  * {
+    box-sizing: border-box;
+  }
+
+  html,
+  body,
+  #root {
+    height: 100%;
+    min-height: 100%;
+  }
+
+  body {
+    margin: 0;
+    font-family: var(--font-sans);
+    background-color: var(--color-background);
+    background-image:
+      linear-gradient(180deg, rgba(77, 163, 255, 0.04), transparent 220px),
+      radial-gradient(ellipse 80% 50% at 50% -20%, rgba(77, 163, 255, 0.08), transparent);
+    color: var(--color-foreground);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  ::selection {
+    background: rgba(77, 163, 255, 0.35);
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  button,
+  input,
+  textarea,
+  select {
+    font: inherit;
+  }
+}
+
+@layer utilities {
+  .scrollbar-thin {
+    scrollbar-width: thin;
+    scrollbar-color: #2a3340 transparent;
+  }
+
+  .panel-glow {
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.04),
+      0 0 0 1px rgba(42, 51, 64, 0.8);
+  }
+
+  .animate-fade-up {
+    animation: fadeUp 0.45s ease-out both;
+  }
+
+  .animate-pulse-soft {
+    animation: pulseSoft 2.4s ease-in-out infinite;
+  }
+
+  .animate-timeline-in {
+    animation: timelineIn 0.5s ease-out both;
+  }
+
+  .animate-node-pulse {
+    animation: nodePulse 2.8s ease-in-out infinite;
+  }
+}
+
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulseSoft {
+  0%,
+  100% {
+    opacity: 1;
+    box-shadow: 0 0 0 0 rgba(240, 180, 41, 0.35);
+  }
+  50% {
+    opacity: 0.9;
+    box-shadow: 0 0 0 6px rgba(240, 180, 41, 0);
+  }
+}
+
+@keyframes timelineIn {
+  from {
+    opacity: 0;
+    transform: translateX(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes nodePulse {
+  0%,
+  100% {
+    filter: drop-shadow(0 0 0 transparent);
+  }
+  50% {
+    filter: drop-shadow(0 0 8px rgba(240, 68, 56, 0.45));
+  }
+}
+
+/* React Flow dark overrides */
+.react-flow__controls {
+  border: 1px solid var(--color-border) !important;
+  border-radius: 8px !important;
+  overflow: hidden;
+  box-shadow: none !important;
+}
+
+.react-flow__controls-button {
+  background: var(--color-surface) !important;
+  border-bottom: 1px solid var(--color-border) !important;
+  fill: var(--color-muted) !important;
+}
+
+.react-flow__controls-button:hover {
+  background: var(--color-surface-elevated) !important;
+}
+
+.react-flow__attribution {
+  display: none !important;
+}
