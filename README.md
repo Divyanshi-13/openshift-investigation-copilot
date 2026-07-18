@@ -69,3 +69,4 @@ To integrate a real model/API later:
 
 No UI changes should be required if the contract is preserved.
 # openshift-investigation-copilot
+# openshift-investigation-copilot
